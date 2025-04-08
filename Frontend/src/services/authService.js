@@ -1,8 +1,8 @@
 import api from './api';
 
 const AUTH_ENDPOINTS = {
-  LOGIN: '/users/login',
-  REGISTER: '/users',
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
   PROFILE: '/users/profile',
 };
 

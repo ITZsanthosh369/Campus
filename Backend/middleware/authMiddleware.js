@@ -32,6 +32,7 @@ const protect = asyncHandler(async (req, res, next) => {
       if (process.env.NODE_ENV !== 'test') {
         console.error(error);
       }
+      
       res.status(401);
       throw new Error('Not authorized, token failed');
     }

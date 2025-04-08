@@ -17,7 +17,10 @@
     "test:watch": "cross-env NODE_ENV=test jest --watchAll",
     "test:memory": "cross-env NODE_ENV=test MONGODB_MEMORY_SERVER=true jest --runInBand --detectOpenHandles --forceExit --verbose",
     "test:atlas": "node Backend/tests/run-atlas-tests.js",
-    "test:atlas:windows": "node -e \"process.env.NODE_ENV='test'; process.env.MONGODB_URI='mongodb+srv://santhosh:TESLA369@cluster0.z6woa.mongodb.net/campusconnect-test?retryWrites=true&w=majority'; require('child_process').execSync('jest --runInBand --detectOpenHandles --forceExit --verbose', {stdio: 'inherit'});\""
+    "test:atlas:windows": "node -e \"process.env.NODE_ENV='test'; process.env.MONGODB_URI='mongodb+srv://santhosh:TESLA369@cluster0.z6woa.mongodb.net/campusconnect-test?retryWrites=true&w=majority'; require('child_process').execSync('jest --runInBand --detectOpenHandles --forceExit --verbose', {stdio: 'inherit'});\"",
+    "create-frontend": "npx create-react-app Frontend --template cra-template-pwa",
+    "setup-frontend": "node scripts/setup-frontend-folders.js && npm install react-scripts react-dom react-router-dom axios --prefix Frontend",
+    "setup-all": "npm run create-frontend && npm run setup-frontend"
   },
   "jest": {
     "testEnvironment": "node",

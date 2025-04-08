@@ -41,7 +41,22 @@ Campus Connect is designed to streamline communication within educational instit
    cd ..
    ```
 
-4. **Run the Application**
+4. **Frontend Setup**
+   ```
+   # Create React frontend structure
+   npm run setup-frontend
+   
+   # Install additional frontend dependencies
+   cd Frontend
+   npm install react-router-dom@latest axios@latest
+   
+   # Optional: Setup Tailwind CSS for styling
+   npm install -D tailwindcss postcss autoprefixer
+   npx tailwindcss init -p
+   cd ..
+   ```
+
+5. **Run the Application**
    ```
    # Run backend and frontend concurrently
    npm run dev
@@ -53,7 +68,7 @@ Campus Connect is designed to streamline communication within educational instit
    npm run client
    ```
 
-5. **Access the Application**
+6. **Access the Application**
    - Backend API: http://localhost:5000
    - Frontend: http://localhost:3000
 
@@ -64,9 +79,12 @@ Campus Connect is designed to streamline communication within educational instit
 - File sharing
 - Event management
 - Announcements
+- Mobile-responsive UI
+- Secure authentication
 
 ## Technology Stack
 - MongoDB - Database
 - Express.js - Backend framework
 - React.js - Frontend library
 - Node.js - Runtime environment
+- Tailwind CSS - Styling framework

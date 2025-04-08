@@ -26,8 +26,10 @@ export const AuthProvider = ({ children }) => {
       const userData = await authService.login(email, password);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
+      return userData; // Return userData to allow role-based redirects
     } catch (err) {
       setError(err.message || 'Failed to login');
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -37,11 +39,14 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const newUser = await authService.register(userData);
+      const response = await api.post('/auth/register', userData);
+      const newUser = response.data;
       setUser(newUser);
       localStorage.setItem('user', JSON.stringify(newUser));
+      return newUser;
     } catch (err) {
-      setError(err.message || 'Failed to register');
+      setError(err.response?.data?.message || 'Failed to register');
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -86,3 +91,5 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;
