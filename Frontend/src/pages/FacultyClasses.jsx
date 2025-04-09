@@ -143,7 +143,8 @@ const FacultyClasses = () => {
                     className="mt-2 text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                     onClick={() => handleOpenChat(classGroup, 'ClassGroup')}
                   >
-                    💬 Chat
+                    <span className="inline-block md:text-sm lg:text-xs">💬</span>
+                    <span className="ml-1">Chat</span>
                   </button>
                 </div>
               </div>
@@ -189,7 +190,8 @@ const FacultyClasses = () => {
                     className="mt-2 text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                     onClick={() => handleOpenChat(course, 'CourseGroup')}
                   >
-                    💬 Chat
+                    <span className="inline-block md:text-sm lg:text-xs">💬</span>
+                    <span className="ml-1">Chat</span>
                   </button>
                 </div>
               </div>

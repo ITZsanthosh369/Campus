@@ -172,7 +172,7 @@ const FacultyCalendar = () => {
             className="p-2 rounded-full hover:bg-indigo-100"
             aria-label="Previous month"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 lg:h-3.5 lg:w-3.5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -182,7 +182,7 @@ const FacultyCalendar = () => {
             className="p-2 rounded-full hover:bg-indigo-100"
             aria-label="Next month"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 lg:h-3.5 lg:w-3.5 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -241,7 +241,7 @@ const FacultyCalendar = () => {
           onClick={handleAddEvent}
           className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 lg:h-3.5 lg:w-3.5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           Add Event

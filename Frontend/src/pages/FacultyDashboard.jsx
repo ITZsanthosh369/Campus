@@ -11,7 +11,7 @@ const DashboardCard = ({ icon, title, subtitle, onClick, bgColor = "bg-indigo-10
     className="flex flex-col items-center justify-center p-4 md:p-6 bg-white rounded-2xl shadow-md hover:shadow-lg border border-gray-100 hover:border-indigo-200 transition-all transform hover:-translate-y-1 w-full h-full"
   >
     <div className={`rounded-full ${bgColor} p-3 mb-3`}>
-      <div className={`w-6 h-6 ${iconColor}`}>
+      <div className={`w-6 h-6 md:w-5 md:h-5 lg:w-4 lg:h-4 ${iconColor}`}>
         {icon}
       </div>
     </div>
@@ -24,7 +24,7 @@ const StatCard = ({ icon, label, value, color }) => (
   <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100 dark:bg-gray-900 dark:border-gray-700">
     <div className="flex items-center space-x-4">
       <div className={`p-2 rounded-full ${color.bg} ${color.text}`}>
-        <div className="w-5 h-5">
+        <div className="w-5 h-5 md:w-4 md:h-4">
           {icon}
         </div>
       </div>
@@ -201,7 +201,7 @@ const FacultyDashboard = () => {
         {/* Faculty Information Card */}
         <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 lg:col-span-1 dark:bg-gray-900 dark:border-gray-700">
           <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             Faculty Information
@@ -229,7 +229,7 @@ const FacultyDashboard = () => {
         {/* Recent Activities Card */}
         <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 lg:col-span-2 dark:bg-gray-900 dark:border-gray-700">
           <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Recent Activities
@@ -243,7 +243,7 @@ const FacultyDashboard = () => {
                     {activity.description || `${activity.type} for ${activity.courseName}`}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-500 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 md:h-2.5 md:w-2.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     {formatDate(activity.date)}
@@ -252,7 +252,7 @@ const FacultyDashboard = () => {
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500 dark:text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 md:h-10 md:w-10 lg:h-8 lg:w-8 text-gray-300 dark:text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <p className="text-gray-500 dark:text-gray-400 italic">No recent activities to display.</p>
@@ -351,15 +351,17 @@ const FacultyDashboard = () => {
       <section className="mt-8">
         <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 dark:bg-gray-900 dark:border-gray-700">
           <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-4 md:w-4 lg:h-3.5 lg:w-3.5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Upcoming Events
           </h2>
           <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500 dark:text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
+            <div className="flex items-center justify-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 md:h-10 md:w-10 lg:h-8 lg:w-8 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
             <p className="text-gray-500 dark:text-gray-400 italic">No upcoming events.</p>
             <button 
               onClick={() => navigate('/faculty/calendar')}

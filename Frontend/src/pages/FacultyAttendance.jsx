@@ -183,7 +183,7 @@ const FacultyAttendance = () => {
         <div className="bg-white p-6 rounded-lg shadow-md md:col-span-3">
           {!selectedClass ? (
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 md:h-12 md:w-12 lg:h-10 lg:w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               <p className="text-center">Please select a class to take attendance</p>
