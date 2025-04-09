@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import '../styles/main.css'; // Added main.css import for global dashboard styles
 
 const DashboardLayout = ({ children, allowedRole }) => {
   const { user, loading } = useAuth();

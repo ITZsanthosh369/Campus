@@ -1,39 +1,33 @@
 import React from 'react';
-import ChatInterface from './ChatInterface';
+import GroupChatFeed from './GroupChatFeed';
+import '../styles/ChatFeed.css';
 
-/**
- * Reusable chat modal component
- * @param {boolean} isOpen - Whether the modal is open
- * @param {function} onClose - Function to call when modal is closed
- * @param {string} groupId - ID of the group for the chat
- * @param {string} groupType - Type of group ('ClassGroup' or 'CourseGroup')
- * @param {object} group - The group object containing name/title information
- */
-const ChatModal = ({ isOpen, onClose, groupId, groupType, group }) => {
+const ChatModal = ({ isOpen, onClose, groupId, groupType, group, messages = [], onSendMessage, isLoading }) => {
   if (!isOpen) return null;
 
-  // Determine title based on group type
-  const title = groupType === 'ClassGroup' 
-    ? `Chat - ${group.name}` 
-    : `Chat - ${group.courseCode}: ${group.courseName}`;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4 transition-opacity duration-300">
-      <div className="bg-white rounded-xl max-w-2xl w-full shadow-xl transform transition-transform duration-300">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl flex flex-col" style={{ height: '80vh', maxHeight: '80vh' }}>
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-bold">{title}</h2>
-          <button
+          <h2 className="text-xl font-semibold">{group?.name || 'Chat'}</h2>
+          <button 
             onClick={onClose}
-            className="text-gray-600 hover:text-gray-900 transition duration-200"
+            className="text-gray-500 hover:text-gray-700"
             aria-label="Close"
           >
-            ✕
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <div className="p-4">
-          <ChatInterface 
-            groupType={groupType} 
-            groupId={groupId} 
+        
+        <div className="flex-1 overflow-hidden">
+          <GroupChatFeed 
+            groupName={group?.name || 'Chat Group'}
+            groupDescription={group?.description}
+            messages={messages}
+            onSendMessage={onSendMessage}
+            isLoading={isLoading}
           />
         </div>
       </div>

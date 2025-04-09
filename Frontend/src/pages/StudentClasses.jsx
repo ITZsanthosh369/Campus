@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import ChatModal from '../components/ChatModal';
 import { fetchWithAuth } from '../utils/apiUtils';
+import styles from '../styles/StudentClasses.module.css'; // Updated to use CSS modules
 
 const StudentClasses = () => {
   const { user } = useAuth();
@@ -18,11 +19,11 @@ const StudentClasses = () => {
 
   // Mock faculty list for the modal
   const mockFacultyList = [
-    "Dr. Rajesh Sharma - Program Coordinator",
-    "Prof. Anita Desai - Mathematics",
-    "Dr. Michael Chen - Computer Science",
-    "Prof. Sunita Patel - Engineering Sciences",
-    "Dr. David Wilson - Physics"
+    { name: "Dr. Rajesh Sharma", role: "Program Coordinator" },
+    { name: "Prof. Anita Desai", role: "Mathematics" },
+    { name: "Dr. Michael Chen", role: "Computer Science" },
+    { name: "Prof. Sunita Patel", role: "Engineering Sciences" },
+    { name: "Dr. David Wilson", role: "Physics" }
   ];
 
   useEffect(() => {
@@ -69,8 +70,8 @@ const StudentClasses = () => {
   // Display loading spinner
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
       </div>
     );
   }
@@ -78,12 +79,12 @@ const StudentClasses = () => {
   // Display error message
   if (error) {
     return (
-      <div className="p-4">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">My Classes</h1>
+      <div className={styles.classesContainer}>
+        <header className={styles.classesHeader}>
+          <h1>My Classes</h1>
         </header>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{error}</p>
+        <div className={styles.errorContainer}>
+          <p className={styles.errorMessage}>{error}</p>
         </div>
       </div>
     );
@@ -92,66 +93,93 @@ const StudentClasses = () => {
   // Update the condition to check for empty arrays properly
   if (!loading && (!classesData.classGroups?.length && !classesData.courseGroups?.length)) {
     return (
-      <div className="p-4">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">My Classes</h1>
-          <p className="text-gray-600 italic">No classes or courses found.</p>
+      <div className={styles.classesContainer}>
+        <header className={styles.classesHeader}>
+          <h1>My Classes</h1>
+          <div className={styles.emptyState}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <p className={styles.emptyStateMessage}>No classes or courses found.</p>
+            <p className={styles.emptyStateHelp}>Please contact academic administration if this seems incorrect.</p>
+          </div>
         </header>
       </div>
     );
   }
 
   return (
-    <div className="p-4">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">My Classes</h1>
-        <p className="text-gray-600">Classes and courses you are enrolled in</p>
+    <div className={styles.classesContainer}>
+      <header className={styles.classesHeader}>
+        <h1>My Classes</h1>
+        <p>Classes and courses you are enrolled in</p>
       </header>
 
       {/* Class Groups Section */}
       {classesData.classGroups?.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-4">Class Groups</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <h2 className={styles.sectionHeader}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Class Groups
+          </h2>
+          <div className={styles.classCardsGrid}>
             {classesData.classGroups.map((classGroup) => (
-              <div key={classGroup._id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">{classGroup.name}</h3>
-                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {classGroup.userRole}
-                  </span>
+              <div key={classGroup._id} className={styles.classCard}>
+                <div className={styles.classCardHeader}>
+                  <h3 className={styles.classCardTitle}>{classGroup.name}</h3>
+                  <span className={`${styles.classCardTag} ${styles.classGroupTag}`}>{classGroup.userRole}</span>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <p><strong>Year:</strong> {classGroup.year}</p>
-                  <p><strong>Batch:</strong> {classGroup.batch}</p>
-                  <p><strong>Department:</strong> {classGroup.department}</p>
-                  {classGroup.tutor && (
-                    <p><strong>Tutor:</strong> {classGroup.tutor.name}</p>
-                  )}
-                  {classGroup.programCoordinator && (
-                    <p><strong>Coordinator:</strong> {classGroup.programCoordinator.name}</p>
-                  )}
+                <div className={styles.classCardBody}>
+                  <div className={styles.classDetails}>
+                    <div className={styles.classDetail}>
+                      <span className={styles.classDetailLabel}>Year:</span>
+                      <span className={styles.classDetailValue}>{classGroup.year}</span>
+                    </div>
+                    <div className={styles.classDetail}>
+                      <span className={styles.classDetailLabel}>Batch:</span>
+                      <span className={styles.classDetailValue}>{classGroup.batch}</span>
+                    </div>
+                    <div className={styles.classDetail}>
+                      <span className={styles.classDetailLabel}>Department:</span>
+                      <span className={styles.classDetailValue}>{classGroup.department}</span>
+                    </div>
+                    {classGroup.tutor && (
+                      <div className={styles.classDetail}>
+                        <span className={styles.classDetailLabel}>Tutor:</span>
+                        <span className={styles.classDetailValue}>{classGroup.tutor.name}</span>
+                      </div>
+                    )}
+                    {classGroup.programCoordinator && (
+                      <div className={styles.classDetail}>
+                        <span className={styles.classDetailLabel}>Coordinator:</span>
+                        <span className={styles.classDetailValue}>{classGroup.programCoordinator.name}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700">
-                    View Details
-                  </button>
-                  {/* Add View Faculty button */}
-                  <button
+                <div className={styles.classCardFooter}>
+                  <button 
                     onClick={() => {
                       setSelectedClassGroupName(classGroup.name);
                       setIsFacultyModalOpen(true);
                     }}
-                    className="text-sm bg-green-600 text-white px-2 py-1 rounded ml-2 hover:bg-green-700 transition duration-200"
+                    className="btn btn-primary"
                   >
-                    👨‍🏫 View Faculty
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    Faculty
                   </button>
-                  {/* Add Chat button */}
                   <button
                     onClick={() => handleOpenChat(classGroup, 'ClassGroup')}
-                    className="text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
+                    className="btn btn-secondary"
                   >
-                    💬 Chat
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Chat
                   </button>
                 </div>
               </div>
@@ -163,36 +191,55 @@ const StudentClasses = () => {
       {/* Course Groups Section */}
       {classesData.courseGroups?.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-4">Course Groups</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <h2 className={styles.sectionHeader}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            Course Groups
+          </h2>
+          <div className={styles.classCardsGrid}>
             {classesData.courseGroups.map((course) => (
-              <div key={course._id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold">{course.courseCode}</h3>
-                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {course.userRole}
-                  </span>
+              <div key={course._id} className={styles.classCard}>
+                <div className={styles.classCardHeader}>
+                  <h3 className={styles.classCardTitle}>{course.courseCode}</h3>
+                  <span className={`${styles.classCardTag} ${styles.courseTag}`}>{course.userRole}</span>
                 </div>
-                <h4 className="text-lg mb-3">{course.courseName}</h4>
-                <div className="space-y-2 text-sm">
-                  <p><strong>Semester:</strong> {course.semester}</p>
-                  {course.faculty && (
-                    <p><strong>Faculty:</strong> {course.faculty.name}</p>
-                  )}
-                  {course.classGroup && (
-                    <p><strong>Class:</strong> {course.classGroup.name}</p>
-                  )}
+                <div className={styles.classCardBody}>
+                  <h4 className={styles.classCardSubtitle}>{course.courseName}</h4>
+                  <div className={styles.classDetails}>
+                    <div className={styles.classDetail}>
+                      <span className={styles.classDetailLabel}>Semester:</span>
+                      <span className={styles.classDetailValue}>{course.semester}</span>
+                    </div>
+                    {course.faculty && (
+                      <div className={styles.classDetail}>
+                        <span className={styles.classDetailLabel}>Faculty:</span>
+                        <span className={styles.classDetailValue}>{course.faculty.name}</span>
+                      </div>
+                    )}
+                    {course.classGroup && (
+                      <div className={styles.classDetail}>
+                        <span className={styles.classDetailLabel}>Class:</span>
+                        <span className={styles.classDetailValue}>{course.classGroup.name}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700">
-                    View Details
+                <div className={styles.classCardFooter}>
+                  <button className="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Details
                   </button>
-                  {/* Add Chat button */}
                   <button
                     onClick={() => handleOpenChat(course, 'CourseGroup')}
-                    className="text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
+                    className="btn btn-secondary"
                   >
-                    💬 Chat
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Chat
                   </button>
                 </div>
               </div>
@@ -203,19 +250,29 @@ const StudentClasses = () => {
 
       {/* Faculty Modal */}
       {isFacultyModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl max-w-md w-full shadow-xl">
-            <h2 className="text-xl font-bold mb-4">
-              Faculty for {selectedClassGroupName}
-            </h2>
-            <ul className="list-disc pl-5 space-y-2">
+        <div className="modal-backdrop">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2 className="modal-title">
+                Faculty for {selectedClassGroupName}
+              </h2>
+            </div>
+            <ul className="faculty-list">
               {mockFacultyList.map((faculty, index) => (
-                <li key={index}>{faculty}</li>
+                <li key={index} className="faculty-item">
+                  <div className="faculty-icon">
+                    {faculty.name.charAt(0)}
+                  </div>
+                  <div className="faculty-info">
+                    <div className="faculty-name">{faculty.name}</div>
+                    <div className="faculty-role">{faculty.role}</div>
+                  </div>
+                </li>
               ))}
             </ul>
             <button
               onClick={() => setIsFacultyModalOpen(false)}
-              className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-200"
+              className="btn btn-primary"
             >
               Close
             </button>

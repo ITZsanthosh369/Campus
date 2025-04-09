@@ -49,9 +49,9 @@ const hasAccessToGroup = async (user, groupType, groupId) => {
       if (!courseGroup) return false;
       
       // Faculty assigned to the course has access
-      if (courseGroup.faculty?.equals(user._id)) return true;
+      if (courseGroup.faculty && courseGroup.faculty.equals(user._id)) return true;
       
-      // Students enrolled in the course have access
+      // Students in the course have access
       if (user.role === 'student' && courseGroup.students.includes(user._id)) return true;
       
       return false;
@@ -62,24 +62,24 @@ const hasAccessToGroup = async (user, groupType, groupId) => {
 };
 
 /**
- * @desc    Send a new message to a group
+ * @desc    Send a message to a group
  * @route   POST /api/v1/messages/send
  * @access  Private
  */
 const sendMessage = asyncHandler(async (req, res) => {
   const { groupType, groupId, content } = req.body;
   const user = req.user;
-
+  
   // Basic validation
   if (!groupType || !groupId || !content) {
     res.status(400);
-    throw new Error('Please provide groupType, groupId, and content');
+    throw new Error('Please provide groupType, groupId and content');
   }
-  
-  // Validate group type
-  if (!['Department', 'ClassGroup', 'CourseGroup'].includes(groupType)) {
-    res.status(400);
-    throw new Error('Invalid groupType');
+
+  // Admin users cannot send messages
+  if (user.role === 'admin') {
+    res.status(403);
+    throw new Error('Admin users are not allowed to send messages');
   }
 
   // Check if user has access to the group
@@ -90,25 +90,23 @@ const sendMessage = asyncHandler(async (req, res) => {
   }
 
   try {
-    // Create the message
     const message = await Message.create({
       sender: user._id,
+      senderName: user.name,
+      senderRole: user.role,
       groupType,
       groupId,
-      content
+      content,
+      timestamp: new Date()
     });
-
-    // Populate sender details before sending response
-    const populatedMessage = await Message.findById(message._id)
-      .populate('sender', 'name email role profileImage');
 
     res.status(201).json({
       success: true,
-      message: populatedMessage,
+      message
     });
   } catch (error) {
     res.status(500);
-    throw new Error(`Failed to send message: ${error.message}`);
+    throw new Error(`Error sending message: ${error.message}`);
   }
 });
 
@@ -145,28 +143,30 @@ const getMessages = asyncHandler(async (req, res) => {
     // Get messages with pagination
     const messages = await Message.find({ groupType, groupId })
       .sort({ timestamp: -1 })
-      .skip((parseInt(page) - 1) * parseInt(limit))
-      .limit(parseInt(limit))
-      .populate('sender', 'name email role profileImage');
-
-    // Get total count
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+    
+    // Get total count for pagination
     const total = await Message.countDocuments({ groupType, groupId });
-
+    
     res.status(200).json({
       success: true,
-      count: messages.length,
-      total,
-      page: parseInt(page),
-      pages: Math.ceil(total / parseInt(limit)),
-      messages
+      messages,
+      pagination: {
+        total,
+        page: parseInt(page),
+        pages: Math.ceil(total / limit),
+        limit: parseInt(limit)
+      }
     });
   } catch (error) {
     res.status(500);
-    throw new Error(`Failed to retrieve messages: ${error.message}`);
+    throw new Error(`Error retrieving messages: ${error.message}`);
   }
 });
 
 module.exports = {
   sendMessage,
   getMessages,
+  hasAccessToGroup // Export for testing
 };

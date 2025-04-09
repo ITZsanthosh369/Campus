@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { fetchWithAuth } from '../utils/apiUtils';
 import APIResponseDebugger from '../components/APIResponseDebugger';
 import APIDebugger from '../components/APIDebugger';
+import styles from '../styles/StudentDashboard.module.css'; // Updated to use CSS modules
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ const StudentDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-
+        
         // Fetch data in parallel with the utility function
         // Remove /api/v1 prefix as it's already in the baseURL
         const [announcementsRes, assignmentsRes, classesRes] = await Promise.all([
@@ -51,15 +52,6 @@ const StudentDashboard = () => {
           const errorMsg = announcementsRes.error || assignmentsRes.error || classesRes.error;
           throw new Error(errorMsg);
         }
-
-        // Verify correct data structure before processing
-        // Announcements should be in: announcementsRes.data.announcements
-        // Assignments should be in: assignmentsRes.data.assignments
-        // Classes should be in: classesRes.data.classGroups and classesRes.data.courseGroups
-        console.log('Announcements array exists:', !!announcementsRes.data?.announcements);
-        console.log('Assignments array exists:', !!assignmentsRes.data?.assignments);
-        console.log('ClassGroups array exists:', !!classesRes.data?.classGroups);
-        console.log('CourseGroups array exists:', !!classesRes.data?.courseGroups);
 
         // Process and set data with proper null checks
         setDashboardData({
@@ -99,17 +91,17 @@ const StudentDashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      <div className={styles.loadingSpinner}>
+        <div className={styles.spinner}></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{error}</p>
+      <div className={styles.dashboardContainer}>
+        <div className={styles.errorContainer}>
+          <p className={styles.errorMessage}>{error}</p>
         </div>
       </div>
     );
@@ -119,127 +111,144 @@ const StudentDashboard = () => {
   const totalClasses = dashboardData.myClasses.classGroups.length + dashboardData.myClasses.courseGroups.length;
 
   return (
-    <div className="p-4">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">Welcome, {user?.name}!</h1>
-        <p className="text-gray-600">Your student dashboard at Campus Connect</p>
+    <div className={styles.dashboardContainer}>
+      <header className={styles.dashboardHeader}>
+        <h1>Welcome, {user?.name}!</h1>
+        <p>Your student dashboard at Campus Connect</p>
       </header>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow-md text-center">
-          <h3 className="text-gray-500 text-sm">Enrolled In</h3>
-          <p className="text-2xl font-bold text-indigo-600">{totalClasses} Classes</p>
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <h3>Enrolled In</h3>
+          <p>{totalClasses} Classes</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg shadow-md text-center">
-          <h3 className="text-gray-500 text-sm">Year</h3>
-          <p className="text-2xl font-bold text-indigo-600">{user?.year || 'N/A'}</p>
+        <div className={styles.statCard}>
+          <h3>Year</h3>
+          <p>{user?.year || 'N/A'}</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg shadow-md text-center">
-          <h3 className="text-gray-500 text-sm">Department</h3>
-          <p className="text-2xl font-bold text-indigo-600">{user?.department || 'N/A'}</p>
+        <div className={styles.statCard}>
+          <h3>Department</h3>
+          <p>{user?.department || 'N/A'}</p>
         </div>
         
-        <div className="bg-white p-4 rounded-lg shadow-md text-center">
-          <h3 className="text-gray-500 text-sm">Batch</h3>
-          <p className="text-2xl font-bold text-indigo-600">{user?.batch || 'N/A'}</p>
+        <div className={styles.statCard}>
+          <h3>Batch</h3>
+          <p>{user?.batch || 'N/A'}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className={styles.contentGrid}>
         {/* Student Information Card */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Student Information</h2>
-          <div className="space-y-2">
-            <p><strong>Name:</strong> {user?.name}</p>
-            <p><strong>Email:</strong> {user?.email}</p>
-            <p><strong>Department:</strong> {user?.department}</p>
-            <p><strong>Class Group:</strong> {user?.classGroup}</p>
-            <p><strong>Batch:</strong> {user?.batch}</p>
-            <p><strong>Year:</strong> {user?.year}</p>
+        <div className={styles.infoCard}>
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Student Information
+          </h2>
+          <div className={styles.infoFields}>
+            <p className={styles.infoField}><strong>Name:</strong> {user?.name}</p>
+            <p className={styles.infoField}><strong>Email:</strong> {user?.email}</p>
+            <p className={styles.infoField}><strong>Department:</strong> {user?.department}</p>
+            <p className={styles.infoField}><strong>Class Group:</strong> {user?.classGroup}</p>
+            <p className={styles.infoField}><strong>Batch:</strong> {user?.batch}</p>
+            <p className={styles.infoField}><strong>Year:</strong> {user?.year}</p>
           </div>
         </div>
 
         {/* Recent Announcements Card */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Recent Announcements</h2>
-          <div className="space-y-4">
+        <div className={styles.infoCard}>
+          <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            Recent Announcements
+          </h2>
+          <div className={styles.announcementsList}>
             {dashboardData.recentAnnouncements.length > 0 ? (
               dashboardData.recentAnnouncements.map(announcement => (
-                <div key={announcement._id || announcement.id} className="pb-3 border-b border-gray-200 last:border-0">
-                  <h3 className="font-medium">{announcement.title}</h3>
-                  <p className="my-1 text-sm">{announcement.content || announcement.description}</p>
-                  <p className="text-xs text-gray-500">{formatDate(announcement.createdAt || announcement.date)}</p>
+                <div key={announcement._id || announcement.id} className={styles.announcementItem}>
+                  <h3>{announcement.title}</h3>
+                  <p>{announcement.content || announcement.description}</p>
+                  <p className={styles.announcementDate}>{formatDate(announcement.createdAt || announcement.date)}</p>
                 </div>
               ))
             ) : (
-              <p className="text-gray-600 italic">No recent announcements.</p>
+              <p className={styles.activityEmpty}>No recent announcements.</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Upcoming Assignments */}
-      <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Upcoming Assignments</h2>
-        <div className="space-y-4">
+      <div className={styles.assignmentCard}>
+        <h2>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          Upcoming Assignments
+        </h2>
+        <div className={styles.assignmentList}>
           {dashboardData.upcomingAssignments.length > 0 ? (
             dashboardData.upcomingAssignments.map(assignment => (
-              <div key={assignment._id} className="flex justify-between items-center pb-3 border-b border-gray-200 last:border-0">
-                <div>
-                  <h3 className="font-medium">{assignment.title}</h3>
-                  <p className="text-sm text-gray-600">{assignment.courseName}</p>
+              <div key={assignment._id} className={styles.assignmentItem}>
+                <div className={styles.assignmentInfo}>
+                  <h3>{assignment.title}</h3>
+                  <p>{assignment.courseName}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium">Due: {formatDate(assignment.dueDate)}</p>
-                  <p className="text-xs text-gray-500">Max Marks: {assignment.maxMarks}</p>
+                <div className={styles.assignmentMeta}>
+                  <p>Due: {formatDate(assignment.dueDate)}</p>
+                  <p>Max Marks: {assignment.maxMarks}</p>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-gray-600 italic">No upcoming assignments.</p>
+            <p className={styles.activityEmpty}>No upcoming assignments.</p>
           )}
         </div>
       </div>
 
       {/* Quick Navigation Section */}
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">Quick Navigation</h2>
-        <div className="flex flex-wrap gap-4">
+      <div className={styles.actionsSection}>
+        <h2>Quick Navigation</h2>
+        <div className={styles.actionsGrid}>
           <button 
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
+            className={styles.actionButton}
             onClick={() => navigate('/student/classes')}
           >
-            📚 My Classes
+            <span className={styles.icon}>📚</span> My Classes
           </button>
           <button 
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
+            className={styles.actionButton}
             onClick={() => navigate('/student/assignments')}
           >
-            📝 Assignments
+            <span className={styles.icon}>📝</span> Assignments
           </button>
           <button 
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
+            className={styles.actionButton}
             onClick={() => navigate('/student/announcements')}
           >
-            📢 Announcements
+            <span className={styles.icon}>📢</span> Announcements
           </button>
           <button 
-            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
+            className={styles.actionButton}
             onClick={() => navigate('/student/queries')}
           >
-            ❓ Submit Query
+            <span className={styles.icon}>❓</span> Submit Query
           </button>
         </div>
       </div>
 
       {/* API Response Debugger (Only visible in development environment) */}
-      <APIResponseDebugger data={apiResponses} title="Dashboard API Responses" />
-      
-      {/* API Debugger to check connectivity */}
-      <APIDebugger />
+      <div className={styles.debugSection}>
+        <APIResponseDebugger data={apiResponses} title="Dashboard API Responses" />
+        
+        {/* API Debugger to check connectivity */}
+        <APIDebugger />
+      </div>
     </div>
   );
 };

@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import '../styles/login.css'; // Added login.css import
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, loading, error, user } = useAuth();
   const navigate = useNavigate();
+  
+  // Add body class for styling
+  useEffect(() => {
+    document.body.classList.add('auth-page');
+    return () => {
+      document.body.classList.remove('auth-page');
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +43,10 @@ const Login = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   if (user) {
     // If already logged in, redirect based on role
     if (user.role === 'faculty') {
@@ -45,67 +59,79 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h1 className="text-center text-3xl font-extrabold text-gray-900">Campus Connect</h1>
-          <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">Sign in to your account</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-logo-container">
+          <div className="auth-logo">CC</div>
         </div>
+        <h1 className="auth-title">Campus Connect</h1>
+        <h2 className="auth-subtitle">Sign in to your account</h2>
         
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="auth-error">
             {error}
           </div>
         )}
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email-address" className="sr-only">Email address</label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="auth-form-group">
+            <label htmlFor="email" className="auth-label">Email Address</label>
+            <div className="auth-input-wrapper">
+              <span className="auth-input-icon">@</span>
               <input
-                id="email-address"
-                name="email"
+                id="email"
                 type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="auth-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
               />
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+          </div>
+          
+          <div className="auth-form-group">
+            <label htmlFor="password" className="auth-label">Password</label>
+            <div className="auth-input-wrapper">
+              <span className="auth-input-icon">🔒</span>
               <input
                 id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                type={showPassword ? "text" : "password"}
+                className="auth-input"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="********"
+                required
               />
+              <button 
+                type="button" 
+                className="password-toggle" 
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? "👁️‍🗨️" : "👁️"}
+              </button>
             </div>
           </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+          
+          <div className="auth-remember">
+            <div className="auth-checkbox-wrapper">
+              <input type="checkbox" id="remember" className="auth-checkbox" />
+            </div>
+            <label htmlFor="remember">Remember me</label>
           </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
+          
+          <button
+            type="submit"
+            className={`auth-button ${loading ? 'auth-button-loading' : ''}`}
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign in'}
+          </button>
+          
+          <div className="auth-footer">
+            <p>
               Don't have an account?{' '}
-              <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Register here
-              </Link>
+              <Link to="/register">Register here</Link>
             </p>
           </div>
         </form>

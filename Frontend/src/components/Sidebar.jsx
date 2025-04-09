@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import styles from '../styles/Sidebar.module.css'; // Updated to use CSS modules
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,11 @@ export const Sidebar = () => {
       label: 'Queries',
       icon: '❓',
       path: '/student/queries'
+    },
+    {
+      label: 'Profile',
+      icon: '👤',
+      path: '/profile'
     }
   ];
 
@@ -62,6 +68,11 @@ export const Sidebar = () => {
       label: 'Circulars',
       icon: '📄',
       path: '/faculty/circulars'
+    },
+    {
+      label: 'Profile',
+      icon: '👤',
+      path: '/profile'
     }
   ];
   
@@ -91,6 +102,11 @@ export const Sidebar = () => {
       label: 'Broadcast Message',
       icon: '📣',
       path: '/hod/broadcast'
+    },
+    {
+      label: 'Profile',
+      icon: '👤',
+      path: '/profile'
     }
   ];
 
@@ -120,13 +136,54 @@ export const Sidebar = () => {
       label: 'Broadcast Message',
       icon: '📣',
       path: '/principal/broadcast'
+    },
+    {
+      label: 'Profile',
+      icon: '👤',
+      path: '/profile'
+    }
+  ];
+
+  // Navigation items for Admin
+  const adminNavItems = [
+    {
+      label: 'Dashboard',
+      icon: '🏠',
+      path: '/admin-dashboard'
+    },
+    {
+      label: 'User Management',
+      icon: '👥',
+      path: '/admin/users'
+    },
+    {
+      label: 'Role Management',
+      icon: '🔑',
+      path: '/admin/roles'
+    },
+    {
+      label: 'Permissions',
+      icon: '🛡️',
+      path: '/admin/permissions'
+    },
+    {
+      label: 'Settings',
+      icon: '⚙️',
+      path: '/admin/settings'
+    },
+    {
+      label: 'Profile',
+      icon: '👤',
+      path: '/profile'
     }
   ];
   
   // Select the appropriate navigation items based on user role
   let navItems = studentNavItems;
   
-  if (user?.role === 'faculty') {
+  if (user?.role === 'admin') {
+    navItems = adminNavItems;
+  } else if (user?.role === 'faculty') {
     navItems = facultyNavItems;
   } else if (user?.role === 'hod') {
     navItems = hodNavItems;
@@ -143,16 +200,14 @@ export const Sidebar = () => {
       {/* Mobile toggle button */}
       <button 
         onClick={toggleSidebar} 
-        className="md:hidden fixed top-4 left-4 z-20 bg-indigo-600 text-white p-2 rounded-md"
+        className={styles.mobileToggle}
       >
         {isOpen ? '✕' : '☰'}
       </button>
       
       {/* Sidebar */}
       <div 
-        className={`fixed top-0 left-0 h-full bg-indigo-800 text-white w-64 p-4 shadow-lg transition-transform duration-300 ease-in-out z-10 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
       >
         <div className="flex flex-col h-full">
           {/* Logo/Brand */}

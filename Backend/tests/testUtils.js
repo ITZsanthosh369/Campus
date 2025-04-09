@@ -142,10 +142,93 @@ const teardownTestDB = async () => {
   }
 };
 
+/**
+ * Helper function to safely get or create a model for testing
+ * This prevents the "OverwriteModelError: Cannot overwrite model once compiled" error
+ * @param {string} modelName - Name of the model
+ * @param {Object} schemaDefinition - Mongoose schema definition object
+ * @returns {mongoose.Model}
+ */
+const getOrCreateModel = (modelName, schemaDefinition) => {
+  try {
+    // Try to get the existing model first
+    return mongoose.model(modelName);
+  } catch (error) {
+    // If the model doesn't exist, create it
+    return mongoose.model(modelName, new mongoose.Schema(schemaDefinition));
+  }
+};
+
+/**
+ * Create a test course group or return existing one
+ */
+const getTestCourseGroupModel = () => {
+  const courseGroupSchema = {
+    courseCode: String,
+    courseName: String,
+    semester: Number,
+    faculty: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    classGroup: { type: mongoose.Schema.Types.ObjectId, ref: 'ClassGroup' },
+    students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  };
+  
+  return getOrCreateModel('CourseGroup', courseGroupSchema);
+};
+
+/**
+ * Create a test query model or return existing one
+ */
+const getTestQueryModel = () => {
+  const querySchema = {
+    courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'CourseGroup' },
+    courseName: String,
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    studentName: String,
+    facultyId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    subject: String,
+    message: String,
+    status: { type: String, default: 'pending' },
+    response: String,
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+  };
+  
+  return getOrCreateModel('Query', querySchema);
+};
+
 module.exports = {
   setupTestDB,
   createTestUser,
   createTestDepartment,
   createTestClassGroup,
-  cleanupTestData
+  cleanupTestData,
+  getOrCreateModel,
+  getTestCourseGroupModel,
+  getTestQueryModel,
+  
+  /**
+   * Create test activity data for student dashboard
+   */
+  createTestActivities: (userId, count = 5) => {
+    const activities = [];
+    const types = ['assignment_submission', 'quiz_completion', 'course_enrollment', 'announcement_read', 'class_attendance'];
+    const courses = ['Introduction to Programming', 'Data Structures', 'Database Systems', 'Web Development', 'Algorithms'];
+    
+    for (let i = 0; i < count; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() - Math.floor(Math.random() * 7)); // Random day in the last week
+      
+      activities.push({
+        _id: new mongoose.Types.ObjectId(),
+        userId,
+        type: types[Math.floor(Math.random() * types.length)],
+        courseName: courses[Math.floor(Math.random() * courses.length)],
+        description: `Activity ${i+1} description text`,
+        date: date,
+        status: Math.random() > 0.3 ? 'completed' : 'pending'
+      });
+    }
+    
+    return activities;
+  }
 };

@@ -20,6 +20,8 @@ import AnnouncementFeed from './pages/AnnouncementFeed';
 import CircularsFeed from './pages/CircularsFeed';
 import StudentAssignments from './pages/StudentAssignments';
 import StudentQueries from './pages/StudentQueries';
+import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 
 // Components
 import DashboardLayout from './components/DashboardLayout';
@@ -227,6 +229,24 @@ const App = () => {
         } 
       />
       
+      <Route 
+        path="/profile" 
+        element={
+          <DashboardLayout>
+            <Profile />
+          </DashboardLayout>
+        } 
+      />
+
+      <Route 
+        path="/admin-dashboard" 
+        element={
+          <DashboardLayout allowedRole="admin">
+            <AdminDashboard />
+          </DashboardLayout>
+        } 
+      />
+
       {/* Legacy dashboard redirect */}
       <Route path="/dashboard" element={<Navigate to={getHomePath()} />} />
       
