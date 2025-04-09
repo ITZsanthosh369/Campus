@@ -22,6 +22,10 @@ import StudentAssignments from './pages/StudentAssignments';
 import StudentQueries from './pages/StudentQueries';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import FacultyQueries from './pages/FacultyQueries';
+import FacultyAssignments from './pages/FacultyAssignments';
+import FacultyAttendance from './pages/FacultyAttendance';
+import FacultyCalendar from './pages/FacultyCalendar';
 
 // Components
 import DashboardLayout from './components/DashboardLayout';
@@ -179,6 +183,51 @@ const App = () => {
         element={
           <DashboardLayout allowedRole="faculty">
             <CircularsFeed />
+          </DashboardLayout>
+        } 
+      />
+      
+      <Route 
+        path="/faculty/queries" 
+        element={
+          <DashboardLayout allowedRole="faculty">
+            <FacultyQueries />
+          </DashboardLayout>
+        } 
+      />
+      
+      <Route 
+        path="/faculty/assignments" 
+        element={
+          <DashboardLayout allowedRole="faculty">
+            <FacultyAssignments />
+          </DashboardLayout>
+        } 
+      />
+      
+      <Route 
+        path="/faculty/attendance" 
+        element={
+          <DashboardLayout allowedRole="faculty">
+            <FacultyAttendance />
+          </DashboardLayout>
+        } 
+      />
+      
+      <Route 
+        path="/faculty/create-announcement" 
+        element={
+          <DashboardLayout allowedRole="faculty">
+            <AnnouncementManagement />
+          </DashboardLayout>
+        } 
+      />
+      
+      <Route 
+        path="/faculty/calendar" 
+        element={
+          <DashboardLayout allowedRole="faculty">
+            <FacultyCalendar />
           </DashboardLayout>
         } 
       />

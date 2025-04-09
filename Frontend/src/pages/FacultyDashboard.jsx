@@ -4,6 +4,38 @@ import { useAuth } from '../context/AuthContext';
 import { getFacultyActivities } from '../services/facultyService';
 import '../styles/FacultyDashboard.css'; // Ensure FacultyDashboard.css is imported
 
+// Dashboard Card component for consistent UI
+const DashboardCard = ({ icon, title, subtitle, onClick, bgColor = "bg-indigo-100", iconColor = "text-indigo-600" }) => (
+  <button 
+    onClick={onClick} 
+    className="flex flex-col items-center justify-center p-4 md:p-6 bg-white rounded-2xl shadow-md hover:shadow-lg border border-gray-100 hover:border-indigo-200 transition-all transform hover:-translate-y-1 w-full h-full"
+  >
+    <div className={`rounded-full ${bgColor} p-3 mb-3`}>
+      <div className={`w-6 h-6 ${iconColor}`}>
+        {icon}
+      </div>
+    </div>
+    <span className="font-medium text-gray-800 dark:text-gray-100 text-center">{title}</span>
+    {subtitle && <span className="text-xs text-gray-500 mt-1 text-center">{subtitle}</span>}
+  </button>
+);
+
+const StatCard = ({ icon, label, value, color }) => (
+  <div className="bg-white p-4 rounded-2xl shadow-md border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100 dark:bg-gray-900 dark:border-gray-700">
+    <div className="flex items-center space-x-4">
+      <div className={`p-2 rounded-full ${color.bg} ${color.text}`}>
+        <div className="w-5 h-5">
+          {icon}
+        </div>
+      </div>
+      <div>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+        <p className={`text-xl font-bold ${color.text}`}>{value}</p>
+      </div>
+    </div>
+  </div>
+);
+
 const FacultyDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -64,7 +96,7 @@ const FacultyDashboard = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-600"></div>
       </div>
     );
   }
@@ -108,95 +140,95 @@ const FacultyDashboard = () => {
 
       {/* Stats Overview */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Dashboard Overview</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-full bg-indigo-50 text-indigo-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Pending Queries</p>
-                <p className="text-2xl font-bold text-indigo-600">{stats.pendingQueries}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-full bg-green-50 text-green-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Assignments</p>
-                <p className="text-2xl font-bold text-green-600">{stats.upcomingAssignments}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-full bg-blue-50 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Courses</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.courseCount}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition duration-300 hover:shadow-md hover:border-indigo-100">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-full bg-amber-50 text-amber-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Students</p>
-                <p className="text-2xl font-bold text-amber-600">{stats.studentCount}</p>
-              </div>
-            </div>
-          </div>
+        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2 dark:text-white">Dashboard Overview</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            }
+            label="Pending Queries"
+            value={stats.pendingQueries}
+            color={{
+              bg: "bg-indigo-50",
+              text: "text-indigo-600"
+            }}
+          />
+          <StatCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            }
+            label="Assignments"
+            value={stats.upcomingAssignments}
+            color={{
+              bg: "bg-green-50",
+              text: "text-green-600"
+            }}
+          />
+          <StatCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            }
+            label="Courses"
+            value={stats.courseCount}
+            color={{
+              bg: "bg-blue-50",
+              text: "text-blue-600"
+            }}
+          />
+          <StatCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            }
+            label="Students"
+            value={stats.studentCount}
+            color={{
+              bg: "bg-amber-50",
+              text: "text-amber-600"
+            }}
+          />
         </div>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Faculty Information Card */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 lg:col-span-1">
-          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 lg:col-span-1 dark:bg-gray-900 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             Faculty Information
           </h2>
           <div className="space-y-3 text-sm">
-            <div className="flex border-b border-gray-100 pb-2">
-              <span className="w-1/3 text-gray-500">Name:</span>
-              <span className="w-2/3 font-medium">{user?.name || 'N/A'}</span>
+            <div className="flex border-b border-gray-100 pb-2 dark:border-gray-700">
+              <span className="w-1/3 text-gray-500 dark:text-gray-400">Name:</span>
+              <span className="w-2/3 font-medium dark:text-gray-200">{user?.name || 'N/A'}</span>
             </div>
-            <div className="flex border-b border-gray-100 pb-2">
-              <span className="w-1/3 text-gray-500">Email:</span>
-              <span className="w-2/3 font-medium">{user?.email || 'N/A'}</span>
+            <div className="flex border-b border-gray-100 pb-2 dark:border-gray-700">
+              <span className="w-1/3 text-gray-500 dark:text-gray-400">Email:</span>
+              <span className="w-2/3 font-medium dark:text-gray-200">{user?.email || 'N/A'}</span>
             </div>
-            <div className="flex border-b border-gray-100 pb-2">
-              <span className="w-1/3 text-gray-500">Department:</span>
-              <span className="w-2/3 font-medium">{user?.department || 'N/A'}</span>
+            <div className="flex border-b border-gray-100 pb-2 dark:border-gray-700">
+              <span className="w-1/3 text-gray-500 dark:text-gray-400">Department:</span>
+              <span className="w-2/3 font-medium dark:text-gray-200">{user?.department || 'N/A'}</span>
             </div>
             <div className="flex">
-              <span className="w-1/3 text-gray-500">Role:</span>
-              <span className="w-2/3 font-medium capitalize">{user?.role || 'N/A'}</span>
+              <span className="w-1/3 text-gray-500 dark:text-gray-400">Role:</span>
+              <span className="w-2/3 font-medium capitalize dark:text-gray-200">{user?.role || 'N/A'}</span>
             </div>
           </div>
         </div>
 
         {/* Recent Activities Card */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 lg:col-span-2">
-          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 lg:col-span-2 dark:bg-gray-900 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -205,12 +237,12 @@ const FacultyDashboard = () => {
           <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
             {activities.length > 0 ? (
               activities.map((activity, index) => (
-                <div key={index} className="p-3 border-l-4 border-indigo-400 bg-indigo-50 rounded-r-md hover:bg-indigo-100 transition-colors">
-                  <h3 className="font-medium text-indigo-800">{activity.title || activity.type}</h3>
-                  <p className="my-1 text-sm text-gray-600">
+                <div key={index} className="p-3 border-l-4 border-indigo-400 bg-indigo-50 rounded-r-md hover:bg-indigo-100 transition-colors dark:bg-indigo-900/30 dark:hover:bg-indigo-900/40">
+                  <h3 className="font-medium text-indigo-800 dark:text-indigo-300">{activity.title || activity.type}</h3>
+                  <p className="my-1 text-sm text-gray-600 dark:text-gray-400">
                     {activity.description || `${activity.type} for ${activity.courseName}`}
                   </p>
-                  <p className="text-xs text-gray-500 flex items-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-500 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -219,12 +251,12 @@ const FacultyDashboard = () => {
                 </div>
               ))
             ) : (
-              <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500 dark:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                <p className="text-gray-500 italic">No recent activities to display.</p>
-                <p className="text-sm text-gray-400 mt-1">New activities will appear here.</p>
+                <p className="text-gray-500 dark:text-gray-400 italic">No recent activities to display.</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">New activities will appear here.</p>
               </div>
             )}
           </div>
@@ -233,105 +265,105 @@ const FacultyDashboard = () => {
 
       {/* Quick Action Cards */}
       <section className="mt-8">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Management Tools</h2>
+        <h2 className="text-xl font-bold text-gray-800 mb-4 border-b pb-2 dark:text-white">Management Tools</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button 
-            onClick={() => navigate('/faculty/classes')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-indigo-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">My Classes</span>
-            <span className="text-xs text-gray-500 mt-1">View assigned courses and classes</span>
-          </button>
+            }
+            title="My Classes"
+            subtitle="View assigned courses and classes"
+            onClick={() => navigate('/faculty/classes')}
+            bgColor="bg-indigo-100"
+            iconColor="text-indigo-600"
+          />
           
-          <button 
-            onClick={() => navigate('/faculty/create-announcement')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-blue-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">Announcements</span>
-            <span className="text-xs text-gray-500 mt-1">Post announcements to students</span>
-          </button>
+            }
+            title="Announcements"
+            subtitle="Post announcements to students"
+            onClick={() => navigate('/faculty/create-announcement')}
+            bgColor="bg-blue-100"
+            iconColor="text-blue-600"
+          />
           
-          <button 
-            onClick={() => navigate('/faculty/queries')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-green-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">Student Queries</span>
-            <span className="text-xs text-gray-500 mt-1">Respond to student questions</span>
-          </button>
+            }
+            title="Student Queries"
+            subtitle="Respond to student questions"
+            onClick={() => navigate('/faculty/queries')}
+            bgColor="bg-green-100"
+            iconColor="text-green-600"
+          />
           
-          <button 
-            onClick={() => navigate('/faculty/assignments')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">Assignments</span>
-            <span className="text-xs text-gray-500 mt-1">Create and grade assignments</span>
-          </button>
+            }
+            title="Assignments"
+            subtitle="Create and grade assignments"
+            onClick={() => navigate('/faculty/assignments')}
+            bgColor="bg-amber-100"
+            iconColor="text-amber-600"
+          />
           
-          <button 
-            onClick={() => navigate('/faculty/attendance')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-purple-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">Attendance</span>
-            <span className="text-xs text-gray-500 mt-1">Mark and view attendance records</span>
-          </button>
+            }
+            title="Attendance"
+            subtitle="Mark and view attendance records"
+            onClick={() => navigate('/faculty/attendance')}
+            bgColor="bg-purple-100"
+            iconColor="text-purple-600"
+          />
           
-          <button 
-            onClick={() => navigate('/faculty/circulars')} 
-            className="flex flex-col items-center justify-center p-6 bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            <div className="rounded-full bg-red-100 p-3 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <DashboardCard 
+            icon={
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
               </svg>
-            </div>
-            <span className="font-medium text-gray-800">Circulars</span>
-            <span className="text-xs text-gray-500 mt-1">View and send circulars</span>
-          </button>
+            }
+            title="Circulars"
+            subtitle="View and send circulars"
+            onClick={() => navigate('/faculty/circulars')}
+            bgColor="bg-red-100"
+            iconColor="text-red-600"
+          />
         </div>
       </section>
 
       {/* Upcoming Events Card */}
       <section className="mt-8">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 dark:bg-gray-900 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center dark:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Upcoming Events
           </h2>
-          <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex flex-col items-center justify-center py-6 text-center text-gray-500 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-300 dark:text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="text-gray-500 italic">No upcoming events.</p>
+            <p className="text-gray-500 dark:text-gray-400 italic">No upcoming events.</p>
             <button 
               onClick={() => navigate('/faculty/calendar')}
-              className="mt-4 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 text-sm font-medium transition-colors"
+              className="mt-4 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-md hover:bg-indigo-100 text-sm font-medium transition-colors dark:bg-indigo-900/30 dark:hover:bg-indigo-900/40 dark:text-indigo-300"
             >
               View Calendar
             </button>
