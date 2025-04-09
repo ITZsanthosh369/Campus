@@ -6,6 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,  // Add this line to send cookies with cross-origin requests
 });
 
 // Add request interceptor for authentication

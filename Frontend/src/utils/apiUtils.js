@@ -12,6 +12,7 @@ const createAuthAxios = () => {
       'Content-Type': 'application/json',
       Authorization: user.token ? `Bearer ${user.token}` : '',
     },
+    withCredentials: true,  // Add this line to send cookies with requests
   });
 };
 

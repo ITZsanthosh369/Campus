@@ -17,7 +17,17 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+// Update CORS configuration
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://campus-connect-frontend.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization']
+}));
+
+// Handle OPTIONS requests
+app.options('*', cors());
 
 // Logging middleware in development
 if (process.env.NODE_ENV === 'development') {
@@ -118,13 +128,13 @@ const startServer = async () => {
     console.error(`Error starting server: ${error.message}`);
     process.exit(1);
   }
-};
-
-// Only start server automatically when not in test environment
-if (process.env.NODE_ENV !== 'test') {
+};f (process.env.NODE_ENV !== 'test') {
   startServer();
+// Only start server automatically when not in test environment
 }
+d startServer for testing
+// Export both app and startServer for testing// Using module.exports directly instead of object syntax for backwards compatibility
 
-// Export both app and startServer for testing
-// Using module.exports directly instead of object syntax for backwards compatibility
-module.exports = app;
+
+
+module.exports = app;// Using module.exports directly instead of object syntax for backwards compatibilitymodule.exports = app;
