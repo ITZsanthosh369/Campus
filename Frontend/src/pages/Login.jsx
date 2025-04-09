@@ -10,19 +10,26 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password) {
+      return; // Add validation feedback if needed
+    }
     
     try {
+      console.log('Attempting login with:', { email });
       const userData = await login(email, password);
+      console.log('Login successful:', userData);
       
       // Redirect based on role
       if (userData.role === 'faculty') {
         navigate('/faculty-dashboard');
-      } else {
+      } else if (userData.role === 'student') {
         navigate('/student-dashboard');
+      } else {
+        navigate('/dashboard');
       }
     } catch (error) {
       console.error('Login failed:', error);
+      // Error is already set in the AuthContext
     }
   };
 
@@ -30,8 +37,11 @@ const Login = () => {
     // If already logged in, redirect based on role
     if (user.role === 'faculty') {
       return <Navigate to="/faculty-dashboard" />;
+    } else if (user.role === 'student') {
+      return <Navigate to="/student-dashboard" />;
+    } else {
+      return <Navigate to="/dashboard" />;
     }
-    return <Navigate to="/student-dashboard" />;
   }
 
   return (

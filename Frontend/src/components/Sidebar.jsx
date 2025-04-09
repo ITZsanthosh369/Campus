@@ -20,6 +20,11 @@ export const Sidebar = () => {
       path: '/student/classes'
     },
     {
+      label: 'Assignments',
+      icon: '📝',
+      path: '/student/assignments'
+    },
+    {
       label: 'Announcements',
       icon: '📰',
       path: '/student/announcements'
@@ -28,6 +33,11 @@ export const Sidebar = () => {
       label: 'Circulars',
       icon: '📄',
       path: '/student/circulars'
+    },
+    {
+      label: 'Queries',
+      icon: '❓',
+      path: '/student/queries'
     }
   ];
 

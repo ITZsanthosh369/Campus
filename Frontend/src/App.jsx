@@ -18,6 +18,8 @@ import CircularUpload from './pages/CircularUpload';
 import RoleBroadcast from './pages/RoleBroadcast';
 import AnnouncementFeed from './pages/AnnouncementFeed';
 import CircularsFeed from './pages/CircularsFeed';
+import StudentAssignments from './pages/StudentAssignments';
+import StudentQueries from './pages/StudentQueries';
 
 // Components
 import DashboardLayout from './components/DashboardLayout';
@@ -129,6 +131,24 @@ const App = () => {
         element={
           <DashboardLayout allowedRole="student">
             <CircularsFeed />
+          </DashboardLayout>
+        } 
+      />
+
+      <Route 
+        path="/student/assignments" 
+        element={
+          <DashboardLayout allowedRole="student">
+            <StudentAssignments />
+          </DashboardLayout>
+        } 
+      />
+
+      <Route 
+        path="/student/queries" 
+        element={
+          <DashboardLayout allowedRole="student">
+            <StudentQueries />
           </DashboardLayout>
         } 
       />

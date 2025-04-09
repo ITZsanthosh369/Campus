@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import DashboardLayout from '../components/DashboardLayout';
 import ChatModal from '../components/ChatModal';
 
 const HODDashboard = () => {
@@ -93,106 +92,100 @@ const HODDashboard = () => {
 
   if (loading) {
     return (
-      <DashboardLayout allowedRole="hod">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-        </div>
-      </DashboardLayout>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <DashboardLayout allowedRole="hod">
-        <div className="p-4">
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <p>{error}</p>
-          </div>
+      <div className="p-4">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p>{error}</p>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout allowedRole="hod">
-      <div className="p-4">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">Welcome, {user?.name}!</h1>
-          <p className="text-gray">Head of Department Dashboard</p>
-        </header>
+    <div className="p-4">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">Welcome, {user?.name}!</h1>
+        <p className="text-gray">Head of Department Dashboard</p>
+      </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Department Information Card */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Department Information</h2>
-            <div className="space-y-2">
-              <p><strong>Name:</strong> {user?.name}</p>
-              <p><strong>Email:</strong> {user?.email}</p>
-              <p><strong>Department:</strong> {user?.department}</p>
-              <p><strong>Role:</strong> Head of Department</p>
-            </div>
-          </div>
-
-          {/* Department Announcements Card */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4">Department Announcements</h2>
-            <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
-              {departmentAnnouncements.map(announcement => (
-                <div key={announcement.id} className="pb-3 border-b border-gray-200 last:border-0">
-                  <h3 className="font-medium">{announcement.title}</h3>
-                  <p className="my-1 text-sm">{announcement.content}</p>
-                  <p className="text-xs text-gray-500">{new Date(announcement.date).toLocaleDateString()}</p>
-                </div>
-              ))}
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Department Information Card */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Department Information</h2>
+          <div className="space-y-2">
+            <p><strong>Name:</strong> {user?.name}</p>
+            <p><strong>Email:</strong> {user?.email}</p>
+            <p><strong>Department:</strong> {user?.department}</p>
+            <p><strong>Role:</strong> Head of Department</p>
           </div>
         </div>
 
-        {/* Quick Navigation Section */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-4">Department Management</h2>
-          <div className="flex flex-wrap gap-4">
-            <button 
-              onClick={() => navigate('/hod/department')} 
-              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
-            >
-              🏢 My Department
-            </button>
-            <button 
-              onClick={handleOpenPrincipalChat}
-              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200"
-            >
-              💬 Message Principal
-            </button>
-            <button
-              onClick={handleOpenDepartmentGroups}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200"
-            >
-              👥 Department Groups
-            </button>
+        {/* Department Announcements Card */}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Department Announcements</h2>
+          <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+            {departmentAnnouncements.map(announcement => (
+              <div key={announcement.id} className="pb-3 border-b border-gray-200 last:border-0">
+                <h3 className="font-medium">{announcement.title}</h3>
+                <p className="my-1 text-sm">{announcement.content}</p>
+                <p className="text-xs text-gray-500">{new Date(announcement.date).toLocaleDateString()}</p>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Department Statistics */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-4">Department Statistics</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-gray-500 text-sm">Faculty Members</h3>
-              <p className="text-2xl font-bold text-indigo-600">12</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-gray-500 text-sm">Active Courses</h3>
-              <p className="text-2xl font-bold text-indigo-600">18</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-gray-500 text-sm">Student Enrollment</h3>
-              <p className="text-2xl font-bold text-indigo-600">245</p>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow-md text-center">
-              <h3 className="text-gray-500 text-sm">Research Projects</h3>
-              <p className="text-2xl font-bold text-indigo-600">7</p>
-            </div>
+      {/* Quick Navigation Section */}
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-4">Department Management</h2>
+        <div className="flex flex-wrap gap-4">
+          <button 
+            onClick={() => navigate('/hod/department')} 
+            className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-200"
+          >
+            🏢 My Department
+          </button>
+          <button 
+            onClick={handleOpenPrincipalChat}
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200"
+          >
+            💬 Message Principal
+          </button>
+          <button
+            onClick={handleOpenDepartmentGroups}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          >
+            👥 Department Groups
+          </button>
+        </div>
+      </div>
+
+      {/* Department Statistics */}
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-4">Department Statistics</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white p-4 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-500 text-sm">Faculty Members</h3>
+            <p className="text-2xl font-bold text-indigo-600">12</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-500 text-sm">Active Courses</h3>
+            <p className="text-2xl font-bold text-indigo-600">18</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-500 text-sm">Student Enrollment</h3>
+            <p className="text-2xl font-bold text-indigo-600">245</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-md text-center">
+            <h3 className="text-gray-500 text-sm">Research Projects</h3>
+            <p className="text-2xl font-bold text-indigo-600">7</p>
           </div>
         </div>
       </div>
@@ -234,7 +227,7 @@ const HODDashboard = () => {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import api from '../services/api';
 import authService from '../services/authService';
 
 const AuthContext = createContext();
@@ -23,12 +24,14 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const userData = await authService.login(email, password);
+      // Use the imported api service
+      const response = await api.post('/auth/login', { email, password });
+      const userData = response.data;
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
-      return userData; // Return userData to allow role-based redirects
+      return userData;
     } catch (err) {
-      setError(err.message || 'Failed to login');
+      setError(err.response?.data?.message || 'Failed to login');
       throw err;
     } finally {
       setLoading(false);

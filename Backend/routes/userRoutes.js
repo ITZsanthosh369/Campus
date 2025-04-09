@@ -9,7 +9,9 @@ const {
   getMe,
   getUserById,
   updateUser,
-  getMyClasses
+  getMyClasses,
+  getFacultyActivities,
+  getStudentQueries
 } = require('../controllers/userController');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 
@@ -28,6 +30,12 @@ router.get('/me', protect, getMe);
 
 // My classes route
 router.get('/my-classes', protect, getMyClasses);
+
+// Faculty activities route
+router.get('/activities', protect, authorizeRoles('faculty'), getFacultyActivities);
+
+// Student queries for faculty route
+router.get('/queries', protect, authorizeRoles('faculty'), getStudentQueries);
 
 // Admin routes
 router.route('/')

@@ -220,69 +220,89 @@ const getMyClasses = asyncHandler(async (req, res) => {
 
   try {
     if (user.role === 'student') {
-      // Get class groups where student is enrolled
-      classGroups = await ClassGroup.find({
-        students: user._id
-      }).select('name year batch department').populate('programCoordinator tutor', 'name email');
-
-      // Get course groups where student is enrolled
-      courseGroups = await CourseGroup.find({
-        students: user._id
-      }).select('courseCode courseName semester').populate('faculty', 'name email');
-
-      // Add role information to each response
-      classGroups = classGroups.map(group => ({
-        ...group.toObject(),
-        userRole: 'student'
-      }));
-
-      courseGroups = courseGroups.map(course => ({
-        ...course.toObject(),
-        userRole: 'student'
-      }));
-    } else if (user.role === 'faculty') {
-      // Get class groups where faculty is tutor or coordinator
-      classGroups = await ClassGroup.find({
-        $or: [
-          { tutor: user._id },
-          { programCoordinator: user._id }
-        ]
-      }).select('name year batch department').populate('programCoordinator tutor', 'name email');
-
-      // Mark the user's role in each class group
-      classGroups = classGroups.map(group => {
-        const groupObj = group.toObject();
-        let userRole = 'unknown';
-        
-        if (group.programCoordinator && group.programCoordinator._id.equals(user._id)) {
-          userRole = 'coordinator';
-        } else if (group.tutor && group.tutor._id.equals(user._id)) {
-          userRole = 'tutor';
+      // TODO: In production, fetch the actual class groups from database
+      // For now, return mock data to unblock frontend testing
+      
+      // Mock class groups data
+      classGroups = [
+        {
+          _id: '60d5ec9d8e8a8d2b9c9a1234',
+          name: user.classGroup || 'CSE-2023',
+          year: parseInt(user.year) || 2,
+          batch: user.batch || 'A',
+          department: user.department || 'CSE',
+          tutor: {
+            _id: '60d5ec9d8e8a8d2b9c9a5678',
+            name: 'Dr. Jane Smith',
+            email: 'jsmith@campusconnect.com'
+          },
+          programCoordinator: {
+            _id: '60d5ec9d8e8a8d2b9c9a9876',
+            name: 'Dr. Robert Johnson',
+            email: 'rjohnson@campusconnect.com'
+          },
+          userRole: 'student'
         }
-        
-        return {
-          ...groupObj,
-          userRole
-        };
-      });
+      ];
 
-      // Get course groups where faculty is assigned
-      courseGroups = await CourseGroup.find({
-        faculty: user._id
-      }).select('courseCode courseName semester classGroup').populate('classGroup', 'name year batch department');
-
-      courseGroups = courseGroups.map(course => ({
-        ...course.toObject(),
-        userRole: 'faculty'
-      }));
-    }
-
-    // Check if any classes or courses were found
-    if (classGroups.length === 0 && courseGroups.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'No classes or courses found for this user'
-      });
+      // Mock course groups data
+      courseGroups = [
+        {
+          _id: '60d5ec9d8e8a8d2b9c9a2345',
+          courseCode: 'CS101',
+          courseName: 'Introduction to Programming',
+          semester: 1,
+          faculty: {
+            _id: '60d5ec9d8e8a8d2b9c9a7890',
+            name: 'Prof. Alan Turing',
+            email: 'faculty@campusconnect.com'
+          },
+          userRole: 'student'
+        },
+        {
+          _id: '60d5ec9d8e8a8d2b9c9a3456',
+          courseCode: 'CS201',
+          courseName: 'Data Structures',
+          semester: 3,
+          faculty: {
+            _id: '60d5ec9d8e8a8d2b9c9a8901',
+            name: 'Dr. Ada Lovelace',
+            email: 'alovelace@campusconnect.com'
+          },
+          userRole: 'student'
+        }
+      ];
+    } else if (user.role === 'faculty') {
+      // TODO: In production, fetch the actual class groups and courses assigned to faculty
+      // Mock data for faculty
+      classGroups = [
+        {
+          _id: '60d5ec9d8e8a8d2b9c9a4567',
+          name: 'CSE-2022',
+          year: 3,
+          batch: 'B',
+          department: 'CSE',
+          userRole: 'tutor',
+          studentCount: 30
+        }
+      ];
+      
+      courseGroups = [
+        {
+          _id: '60d5ec9d8e8a8d2b9c9a5678',
+          courseCode: 'CS301',
+          courseName: 'Database Systems',
+          semester: 5,
+          classGroup: {
+            name: 'CSE-2022',
+            year: 3,
+            batch: 'B',
+            department: 'CSE'
+          },
+          userRole: 'faculty',
+          studentCount: 28
+        }
+      ];
     }
 
     res.status(200).json({
@@ -296,6 +316,116 @@ const getMyClasses = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Get recent activities for faculty
+ * @route   GET /api/v1/users/activities
+ * @access  Private/Faculty
+ */
+const getFacultyActivities = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  // Verify user is faculty
+  if (user.role !== 'faculty') {
+    res.status(403);
+    throw new Error('Not authorized, faculty only');
+  }
+
+  try {
+    // Mock data for now - in a real app, this would query from activity collection
+    const activities = [
+      {
+        type: 'assignment',
+        title: 'Midterm Assignment',
+        courseCode: 'CS101',
+        courseName: 'Introduction to Programming',
+        date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        status: 'posted'
+      },
+      {
+        type: 'attendance',
+        courseCode: 'CS201',
+        courseName: 'Data Structures',
+        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        studentsPresent: 42,
+        studentsAbsent: 3
+      },
+      {
+        type: 'grading',
+        title: 'Lab Exercise 4',
+        courseCode: 'CS101',
+        courseName: 'Introduction to Programming',
+        date: new Date(),
+        submissionsGraded: 35
+      }
+    ];
+
+    res.status(200).json({
+      success: true,
+      activities: activities
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Error retrieving activities: ${error.message}`);
+  }
+});
+
+/**
+ * @desc    Get student queries for faculty
+ * @route   GET /api/v1/users/queries
+ * @access  Private/Faculty
+ */
+const getStudentQueries = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { courseId } = req.query;
+
+  // Verify user is faculty
+  if (user.role !== 'faculty') {
+    res.status(403);
+    throw new Error('Not authorized, faculty only');
+  }
+
+  try {
+    // Mock data for now - in a real app, this would query from queries collection
+    const queries = [
+      {
+        id: '1',
+        studentName: 'John Doe',
+        studentId: '60a12e5c9b48e32b4c9a1234',
+        courseCode: 'CS101',
+        courseName: 'Introduction to Programming',
+        subject: 'Assignment Clarification',
+        message: 'I need clarification on question 3 of the midterm assignment.',
+        date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        status: 'pending'
+      },
+      {
+        id: '2',
+        studentName: 'Jane Smith',
+        studentId: '60a12e5c9b48e32b4c9a5678',
+        courseCode: 'CS201',
+        courseName: 'Data Structures',
+        subject: 'Extension Request',
+        message: 'Could I have a two-day extension for submitting the lab report?',
+        date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        status: 'pending'
+      }
+    ];
+
+    // If courseId is provided, filter queries by course
+    const filteredQueries = courseId ? 
+      queries.filter(query => query.courseId === courseId) : 
+      queries;
+
+    res.status(200).json({
+      success: true,
+      queries: filteredQueries
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Error retrieving student queries: ${error.message}`);
+  }
+});
+
 module.exports = {
   authUser,
   registerUser,
@@ -305,5 +435,7 @@ module.exports = {
   getMe,
   getUserById,
   updateUser,
-  getMyClasses
+  getMyClasses,
+  getFacultyActivities,
+  getStudentQueries
 };

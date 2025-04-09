@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { fetchWithAuth } from '../utils/apiUtils'; // Import fetchWithAuth
 import ChatModal from '../components/ChatModal';
 
 const FacultyClasses = () => {
@@ -24,21 +24,18 @@ const FacultyClasses = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // Get token from localStorage
-        const token = localStorage.getItem('userToken');
+        // Use fetchWithAuth instead of axios directly
+        const { data, error } = await fetchWithAuth('/users/my-classes');
         
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const response = await axios.get('/api/v1/users/my-classes', config);
-        setClassesData(response.data);
+        if (error) {
+          throw new Error(error);
+        }
+        
+        setClassesData(data);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching classes:', err);
-        setError(err.response?.data?.message || 'Failed to fetch classes');
+        setError(err.message || 'Failed to fetch classes');
         setLoading(false);
       }
     };

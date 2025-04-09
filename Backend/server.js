@@ -6,6 +6,7 @@ const { connectDB, checkConnectionStatus } = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const mongoose = require('mongoose');
 const path = require('path');
+const logRoutes = require('./utils/routeLogger'); // Import route logger at the top of the file
 
 // Load environment variables
 dotenv.config({
@@ -45,6 +46,39 @@ apiRouter.use('/users', require('./routes/userRoutes'));
 apiRouter.use('/groups', require('./routes/groupRoutes'));
 apiRouter.use('/messages', require('./routes/messageRoutes'));
 apiRouter.use('/profiles', require('./routes/profileRoutes'));
+apiRouter.use('/assignments', require('./routes/assignmentRoutes'));
+apiRouter.use('/attendance', require('./routes/attendanceRoutes'));
+apiRouter.use('/submissions', require('./routes/submissionRoutes'));
+apiRouter.use('/grading', require('./routes/gradingRoutes'));
+apiRouter.use('/queries', require('./routes/queryRoutes'));
+apiRouter.use('/announcements', require('./routes/announcementRoutes'));
+
+// Debug endpoint to check available routes
+apiRouter.get('/routes', (req, res) => {
+  const routes = [];
+  
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      // Routes registered directly on the app
+      routes.push(middleware.route.path);
+    } else if (middleware.name === 'router') {
+      // Router middleware
+      middleware.handle.stack.forEach((handler) => {
+        const route = handler.route;
+        if (route) {
+          const path = middleware.regexp.source === "^\\/?(?=\\/|$)"
+            ? route.path
+            : middleware.regexp.source.replace("^\\", "").replace("\\/?(?=\\/|$)", "") + route.path;
+          routes.push(path);
+        }
+      });
+    }
+  });
+  
+  res.json({
+    availableRoutes: routes
+  });
+});
 
 // Base route
 app.get('/', (req, res) => {
@@ -63,18 +97,26 @@ const startServer = async () => {
   try {
     await connectDB();
     
-    if (process.env.NODE_ENV !== 'test') {
-      const server = app.listen(PORT, () => {
-        const status = checkConnectionStatus();
-        console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-        console.log(`MongoDB connection status: ${status.state}`);
-        console.log(`Connected to database: ${status.dbName}`);
+    const server = app.listen(PORT, () => {
+      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+      
+      // Log all routes after server starts
+      logRoutes(app);
+    });
+    
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (err) => {
+      console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+      console.log(err.name, err.message);
+      server.close(() => {
+        process.exit(1);
       });
-      return server;
-    }
-    return null;
+    });
+    
+    return server;
   } catch (error) {
-    console.error(`Failed to start server: ${error.message}`);
+    console.error(`Error starting server: ${error.message}`);
+    process.exit(1);
   }
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
 import ChatModal from '../components/ChatModal';
+import { fetchWithAuth } from '../utils/apiUtils';
 
 const StudentClasses = () => {
   const { user } = useAuth();
@@ -28,21 +28,23 @@ const StudentClasses = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // Get token from localStorage
-        const token = localStorage.getItem('userToken');
+        setLoading(true);
+        // Update API call to remove duplicate /api/v1 prefix
+        const { data, error } = await fetchWithAuth('/users/my-classes');
         
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        const response = await axios.get('/api/v1/users/my-classes', config);
-        setClassesData(response.data);
+        if (error) {
+          throw new Error(error);
+        }
+        
+        // Ensure we're accessing the correct properties in the response
+        setClassesData({
+          classGroups: data?.classGroups || [],
+          courseGroups: data?.courseGroups || []
+        });
         setLoading(false);
       } catch (err) {
         console.error('Error fetching classes:', err);
-        setError(err.response?.data?.message || 'Failed to fetch classes');
+        setError(err.message || 'Failed to fetch classes');
         setLoading(false);
       }
     };
@@ -87,9 +89,8 @@ const StudentClasses = () => {
     );
   }
 
-  // Display no classes found message
-  if (!classesData.success || 
-      (classesData.classGroups?.length === 0 && classesData.courseGroups?.length === 0)) {
+  // Update the condition to check for empty arrays properly
+  if (!loading && (!classesData.classGroups?.length && !classesData.courseGroups?.length)) {
     return (
       <div className="p-4">
         <header className="mb-6">
