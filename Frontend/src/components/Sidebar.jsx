@@ -7,22 +7,122 @@ export const Sidebar = () => {
   const location = useLocation();
   const { user } = useAuth();
   
-  // Different navigation items based on user role
+  // Navigation items for Students
   const studentNavItems = [
-    { path: '/student-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/student/classes', label: 'My Classes', icon: '📚' },
-    { path: '/announcements', label: 'Announcements', icon: '📢' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' },
+    {
+      label: 'Dashboard',
+      icon: '🏠',
+      path: '/student-dashboard'
+    },
+    {
+      label: 'My Classes',
+      icon: '📚',
+      path: '/student/classes'
+    },
+    {
+      label: 'Announcements',
+      icon: '📰',
+      path: '/student/announcements'
+    },
+    {
+      label: 'Circulars',
+      icon: '📄',
+      path: '/student/circulars'
+    }
   ];
-  
+
+  // Navigation items for Faculty
   const facultyNavItems = [
-    { path: '/faculty-dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/faculty/courses', label: 'My Courses', icon: '📚' },
-    { path: '/announcements', label: 'Announcements', icon: '📢' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' },
+    {
+      label: 'Dashboard',
+      icon: '🏠',
+      path: '/faculty-dashboard'
+    },
+    {
+      label: 'My Classes',
+      icon: '📚',
+      path: '/faculty/classes'
+    },
+    {
+      label: 'Announcements',
+      icon: '📰',
+      path: '/faculty/announcements'
+    },
+    {
+      label: 'Circulars',
+      icon: '📄',
+      path: '/faculty/circulars'
+    }
   ];
   
-  const navItems = user?.role === 'faculty' ? facultyNavItems : studentNavItems;
+  // Navigation items for HOD
+  const hodNavItems = [
+    {
+      label: 'Dashboard',
+      icon: '🏠',
+      path: '/hod-dashboard'
+    },
+    {
+      label: 'Department',
+      icon: '🏢',
+      path: '/hod/department'
+    },
+    {
+      label: 'Announcements',
+      icon: '📢',
+      path: '/hod/announcements'
+    },
+    {
+      label: 'Circulars',
+      icon: '📄',
+      path: '/hod/circulars'
+    },
+    {
+      label: 'Broadcast Message',
+      icon: '📣',
+      path: '/hod/broadcast'
+    }
+  ];
+
+  // Navigation items for Principal
+  const principalNavItems = [
+    {
+      label: 'Dashboard',
+      icon: '🏠',
+      path: '/principal-dashboard'
+    },
+    {
+      label: 'Role Management',
+      icon: '👥',
+      path: '/principal/role-management'
+    },
+    {
+      label: 'Announcements',
+      icon: '📢',
+      path: '/principal/announcements'
+    },
+    {
+      label: 'Circulars',
+      icon: '📄',
+      path: '/principal/circulars'
+    },
+    {
+      label: 'Broadcast Message',
+      icon: '📣',
+      path: '/principal/broadcast'
+    }
+  ];
+  
+  // Select the appropriate navigation items based on user role
+  let navItems = studentNavItems;
+  
+  if (user?.role === 'faculty') {
+    navItems = facultyNavItems;
+  } else if (user?.role === 'hod') {
+    navItems = hodNavItems;
+  } else if (user?.role === 'principal') {
+    navItems = principalNavItems;
+  }
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);

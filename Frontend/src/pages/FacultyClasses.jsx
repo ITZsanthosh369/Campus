@@ -3,27 +3,23 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import ChatModal from '../components/ChatModal';
 
-const StudentClasses = () => {
+const FacultyClasses = () => {
   const { user } = useAuth();
   const [classesData, setClassesData] = useState({ classGroups: [], courseGroups: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Add new state variables for faculty modal
-  const [isFacultyModalOpen, setIsFacultyModalOpen] = useState(false);
-  const [selectedClassGroupName, setSelectedClassGroupName] = useState('');
-  // Renamed from showChat to isChatModalOpen for consistency
+  const [selectedClass, setSelectedClass] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(""); // "class" or "course"
+  const [selectedItemName, setSelectedItemName] = useState(""); // holds class or course name
+  
+  // Chat state variables
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [selectedGroupType, setSelectedGroupType] = useState(null);
-
-  // Mock faculty list for the modal
-  const mockFacultyList = [
-    "Dr. Rajesh Sharma - Program Coordinator",
-    "Prof. Anita Desai - Mathematics",
-    "Dr. Michael Chen - Computer Science",
-    "Prof. Sunita Patel - Engineering Sciences",
-    "Dr. David Wilson - Physics"
-  ];
+  const [selectedChatGroup, setSelectedChatGroup] = useState(null);
+  const [selectedChatGroupType, setSelectedChatGroupType] = useState(null);
+  
+  // Mock student list
+  const mockStudents = ["Alice Kumar", "John Mathew", "Sneha Raj", "David Lee", "Maria Garcia"];
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -49,20 +45,6 @@ const StudentClasses = () => {
 
     fetchClasses();
   }, []);
-
-  // Function to handle opening chat for a specific group
-  const handleOpenChat = (group, type) => {
-    setSelectedGroup(group);
-    setSelectedGroupType(type);
-    setIsChatModalOpen(true);
-  };
-
-  // Function to close chat
-  const handleCloseChat = () => {
-    setIsChatModalOpen(false);
-    setSelectedGroup(null);
-    setSelectedGroupType(null);
-  };
 
   // Display loading spinner
   if (loading) {
@@ -94,61 +76,75 @@ const StudentClasses = () => {
       <div className="p-4">
         <header className="mb-6">
           <h1 className="text-2xl font-bold mb-2">My Classes</h1>
-          <p className="text-gray-600 italic">No classes or courses found.</p>
+          <p className="text-gray-600 italic">No classes or courses assigned.</p>
         </header>
       </div>
     );
   }
 
+  // Function to handle opening the chat modal
+  const handleOpenChat = (group, type) => {
+    setSelectedChatGroup(group);
+    setSelectedChatGroupType(type);
+    setIsChatModalOpen(true);
+  };
+
+  // Function to close the chat modal
+  const handleCloseChat = () => {
+    setIsChatModalOpen(false);
+    setSelectedChatGroup(null);
+    setSelectedChatGroupType(null);
+  };
+
   return (
     <div className="p-4">
       <header className="mb-6">
         <h1 className="text-2xl font-bold mb-2">My Classes</h1>
-        <p className="text-gray-600">Classes and courses you are enrolled in</p>
+        <p className="text-gray-600">Classes and courses you are assigned to teach or manage</p>
       </header>
 
       {/* Class Groups Section */}
       {classesData.classGroups?.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-4">Class Groups</h2>
+          <h2 className="text-xl font-semibold mb-4">Assigned Class Groups</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {classesData.classGroups.map((classGroup) => (
               <div key={classGroup._id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-xl font-semibold">{classGroup.name}</h3>
                   <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {classGroup.userRole}
+                    {classGroup.userRole === 'faculty' ? 
+                      (classGroup.programCoordinator?._id === user?._id ? 'Coordinator' : 'Tutor') : 
+                      classGroup.userRole}
                   </span>
                 </div>
                 <div className="space-y-2 text-sm">
                   <p><strong>Year:</strong> {classGroup.year}</p>
                   <p><strong>Batch:</strong> {classGroup.batch}</p>
                   <p><strong>Department:</strong> {classGroup.department}</p>
-                  {classGroup.tutor && (
-                    <p><strong>Tutor:</strong> {classGroup.tutor.name}</p>
-                  )}
-                  {classGroup.programCoordinator && (
-                    <p><strong>Coordinator:</strong> {classGroup.programCoordinator.name}</p>
-                  )}
+                  <p><strong>Students:</strong> {classGroup.studentCount || 'Not available'}</p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700">
-                    View Details
-                  </button>
-                  {/* Add View Faculty button */}
-                  <button
+                  <button 
+                    className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-200 mr-2"
                     onClick={() => {
-                      setSelectedClassGroupName(classGroup.name);
-                      setIsFacultyModalOpen(true);
+                      setSelectedItemName(classGroup.name);
+                      setModalType("class");
+                      setIsModalOpen(true);
                     }}
-                    className="text-sm bg-green-600 text-white px-2 py-1 rounded ml-2 hover:bg-green-700 transition duration-200"
                   >
-                    👨‍🏫 View Faculty
+                    Manage Class
+                  </button>
+                  <button 
+                    className="mt-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition duration-200"
+                    onClick={() => { setSelectedClass(classGroup.name); setIsModalOpen(true); }}
+                  >
+                    View Students
                   </button>
                   {/* Add Chat button */}
                   <button
+                    className="mt-2 text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                     onClick={() => handleOpenChat(classGroup, 'ClassGroup')}
-                    className="text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                   >
                     💬 Chat
                   </button>
@@ -162,34 +158,39 @@ const StudentClasses = () => {
       {/* Course Groups Section */}
       {classesData.courseGroups?.length > 0 && (
         <>
-          <h2 className="text-xl font-semibold mb-4">Course Groups</h2>
+          <h2 className="text-xl font-semibold mb-4">Assigned Courses</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {classesData.courseGroups.map((course) => (
               <div key={course._id} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-xl font-semibold">{course.courseCode}</h3>
                   <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {course.userRole}
+                    Instructor
                   </span>
                 </div>
                 <h4 className="text-lg mb-3">{course.courseName}</h4>
                 <div className="space-y-2 text-sm">
                   <p><strong>Semester:</strong> {course.semester}</p>
-                  {course.faculty && (
-                    <p><strong>Faculty:</strong> {course.faculty.name}</p>
-                  )}
                   {course.classGroup && (
-                    <p><strong>Class:</strong> {course.classGroup.name}</p>
+                    <p><strong>Assigned Class:</strong> {course.classGroup.name}</p>
                   )}
+                  <p><strong>Students:</strong> {course.studentCount || 'Not available'}</p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-100">
-                  <button className="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700">
-                    View Details
+                  <button 
+                    className="mt-2 bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-200"
+                    onClick={() => {
+                      setSelectedItemName(course.courseCode);
+                      setModalType("course");
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Manage Course
                   </button>
                   {/* Add Chat button */}
                   <button
+                    className="mt-2 text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                     onClick={() => handleOpenChat(course, 'CourseGroup')}
-                    className="text-sm bg-blue-600 text-white px-2 py-1 rounded ml-2 hover:bg-blue-700 transition duration-200"
                   >
                     💬 Chat
                   </button>
@@ -199,22 +200,41 @@ const StudentClasses = () => {
           </div>
         </>
       )}
-
-      {/* Faculty Modal */}
-      {isFacultyModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl max-w-md w-full shadow-xl">
-            <h2 className="text-xl font-bold mb-4">
-              Faculty for {selectedClassGroupName}
-            </h2>
-            <ul className="list-disc pl-5 space-y-2">
-              {mockFacultyList.map((faculty, index) => (
-                <li key={index}>{faculty}</li>
+      
+      {/* Student Modal */}
+      {selectedClass && !modalType && isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl w-96 shadow-xl">
+            <h2 className="text-xl font-bold mb-4">Students in {selectedClass}</h2>
+            <ul className="list-disc list-inside space-y-2">
+              {mockStudents.map((student, idx) => (
+                <li key={idx}>{student}</li>
               ))}
             </ul>
             <button
-              onClick={() => setIsFacultyModalOpen(false)}
-              className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-200"
+              className="mt-4 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Management Modal */}
+      {modalType && isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl w-96 shadow-xl">
+            <h2 className="text-xl font-bold mb-4">
+              Manage {modalType === "class" ? "Class" : "Course"}: {selectedItemName}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              This will allow faculty to edit {modalType} details, view analytics, assign materials, etc.
+              This is a placeholder for now.
+            </p>
+            <button
+              className="mt-2 bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              onClick={() => { setIsModalOpen(false); setModalType(""); }}
             >
               Close
             </button>
@@ -223,17 +243,17 @@ const StudentClasses = () => {
       )}
 
       {/* Replace the Chat Modal with the new ChatModal component */}
-      {selectedGroup && (
+      {selectedChatGroup && (
         <ChatModal
           isOpen={isChatModalOpen}
           onClose={handleCloseChat}
-          groupId={selectedGroup._id}
-          groupType={selectedGroupType}
-          group={selectedGroup}
+          groupId={selectedChatGroup._id}
+          groupType={selectedChatGroupType}
+          group={selectedChatGroup}
         />
       )}
     </div>
   );
 };
 
-export default StudentClasses;
+export default FacultyClasses;

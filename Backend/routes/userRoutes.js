@@ -8,7 +8,8 @@ const {
   getUsers,
   getMe,
   getUserById,
-  updateUser
+  updateUser,
+  getMyClasses
 } = require('../controllers/userController');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 
@@ -24,6 +25,9 @@ router
 
 // Current user route
 router.get('/me', protect, getMe);
+
+// My classes route
+router.get('/my-classes', protect, getMyClasses);
 
 // Admin routes
 router.route('/')

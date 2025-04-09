@@ -1,9 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import DashboardLayout from '../components/DashboardLayout';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Dummy announcement data
   const recentAnnouncements = [
@@ -28,57 +29,60 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <DashboardLayout allowedRole="student">
-      <div className="p-4">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">Welcome, {user?.name}!</h1>
-          <p className="text-gray">Your student dashboard at Campus Connect</p>
-        </header>
+    <div className="p-4">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">Welcome, {user?.name}!</h1>
+        <p className="text-gray">Your student dashboard at Campus Connect</p>
+      </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Student Information Card */}
-          <div className="card">
-            <div className="card-body">
-              <h2 className="text-xl font-semibold mb-4">Student Information</h2>
-              <div className="space-y-2">
-                <p><strong>Name:</strong> {user?.name}</p>
-                <p><strong>Email:</strong> {user?.email}</p>
-                <p><strong>Department:</strong> {user?.department}</p>
-                <p><strong>Class Group:</strong> {user?.classGroup}</p>
-                <p><strong>Batch:</strong> {user?.batch}</p>
-                <p><strong>Year:</strong> {user?.year}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Announcements Card */}
-          <div className="card">
-            <div className="card-body">
-              <h2 className="text-xl font-semibold mb-4">Recent Announcements</h2>
-              <div className="space-y-4">
-                {recentAnnouncements.map(announcement => (
-                  <div key={announcement.id} className="pb-3 border-b border-gray-200 last:border-0">
-                    <h3 className="font-medium">{announcement.title}</h3>
-                    <p className="my-1 text-sm">{announcement.content}</p>
-                    <p className="text-xs text-gray">{new Date(announcement.date).toLocaleDateString()}</p>
-                  </div>
-                ))}
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Student Information Card */}
+        <div className="card">
+          <div className="card-body">
+            <h2 className="text-xl font-semibold mb-4">Student Information</h2>
+            <div className="space-y-2">
+              <p><strong>Name:</strong> {user?.name}</p>
+              <p><strong>Email:</strong> {user?.email}</p>
+              <p><strong>Department:</strong> {user?.department}</p>
+              <p><strong>Class Group:</strong> {user?.classGroup}</p>
+              <p><strong>Batch:</strong> {user?.batch}</p>
+              <p><strong>Year:</strong> {user?.year}</p>
             </div>
           </div>
         </div>
 
-        {/* Quick Navigation Section */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-4">Quick Navigation</h2>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn btn-primary">My Classes</button>
-            <button className="btn">Assignment Calendar</button>
-            <button className="btn">Course Materials</button>
+        {/* Recent Announcements Card */}
+        <div className="card">
+          <div className="card-body">
+            <h2 className="text-xl font-semibold mb-4">Recent Announcements</h2>
+            <div className="space-y-4">
+              {recentAnnouncements.map(announcement => (
+                <div key={announcement.id} className="pb-3 border-b border-gray-200 last:border-0">
+                  <h3 className="font-medium">{announcement.title}</h3>
+                  <p className="my-1 text-sm">{announcement.content}</p>
+                  <p className="text-xs text-gray">{new Date(announcement.date).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </DashboardLayout>
+
+      {/* Quick Navigation Section */}
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-4">Quick Navigation</h2>
+        <div className="flex flex-wrap gap-4">
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate('/student/classes')}
+          >
+            📚 My Classes
+          </button>
+          <button className="btn">Assignment Calendar</button>
+          <button className="btn">Course Materials</button>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+const ClassGroup = require('../models/classGroupModel');
+const CourseGroup = require('../models/courseGroupModel');
 const generateToken = require('../utils/generateToken');
 
 /**
@@ -206,6 +208,94 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Get classes and courses associated with the authenticated user
+ * @route   GET /api/v1/users/my-classes
+ * @access  Private
+ */
+const getMyClasses = asyncHandler(async (req, res) => {
+  const user = req.user;
+  let classGroups = [];
+  let courseGroups = [];
+
+  try {
+    if (user.role === 'student') {
+      // Get class groups where student is enrolled
+      classGroups = await ClassGroup.find({
+        students: user._id
+      }).select('name year batch department').populate('programCoordinator tutor', 'name email');
+
+      // Get course groups where student is enrolled
+      courseGroups = await CourseGroup.find({
+        students: user._id
+      }).select('courseCode courseName semester').populate('faculty', 'name email');
+
+      // Add role information to each response
+      classGroups = classGroups.map(group => ({
+        ...group.toObject(),
+        userRole: 'student'
+      }));
+
+      courseGroups = courseGroups.map(course => ({
+        ...course.toObject(),
+        userRole: 'student'
+      }));
+    } else if (user.role === 'faculty') {
+      // Get class groups where faculty is tutor or coordinator
+      classGroups = await ClassGroup.find({
+        $or: [
+          { tutor: user._id },
+          { programCoordinator: user._id }
+        ]
+      }).select('name year batch department').populate('programCoordinator tutor', 'name email');
+
+      // Mark the user's role in each class group
+      classGroups = classGroups.map(group => {
+        const groupObj = group.toObject();
+        let userRole = 'unknown';
+        
+        if (group.programCoordinator && group.programCoordinator._id.equals(user._id)) {
+          userRole = 'coordinator';
+        } else if (group.tutor && group.tutor._id.equals(user._id)) {
+          userRole = 'tutor';
+        }
+        
+        return {
+          ...groupObj,
+          userRole
+        };
+      });
+
+      // Get course groups where faculty is assigned
+      courseGroups = await CourseGroup.find({
+        faculty: user._id
+      }).select('courseCode courseName semester classGroup').populate('classGroup', 'name year batch department');
+
+      courseGroups = courseGroups.map(course => ({
+        ...course.toObject(),
+        userRole: 'faculty'
+      }));
+    }
+
+    // Check if any classes or courses were found
+    if (classGroups.length === 0 && courseGroups.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No classes or courses found for this user'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      classGroups,
+      courseGroups
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(`Error retrieving classes: ${error.message}`);
+  }
+});
+
 module.exports = {
   authUser,
   registerUser,
@@ -214,5 +304,6 @@ module.exports = {
   getUsers,
   getMe,
   getUserById,
-  updateUser
+  updateUser,
+  getMyClasses
 };
