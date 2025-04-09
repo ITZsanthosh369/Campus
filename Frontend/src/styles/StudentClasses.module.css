@@ -248,3 +248,63 @@
     gap: 1.5rem;
   }
 }
+
+/* Additional responsive adjustments for sidebar compatibility */
+@media (min-width: 1025px) {
+  .classesContainer {
+    padding-left: 1rem; /* Leave space for the sidebar */
+  }
+}
+
+/* Fix overlap with mobile sidebar toggle */
+@media (max-width: 1024px) {
+  .classesContainer {
+    padding-top: 3.5rem; /* Room for the mobile toggle button */
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .classesHeader h1 {
+    color: #f3f4f6;
+  }
+  
+  .classesHeader p {
+    color: #d1d5db;
+  }
+  
+  .sectionHeader {
+    color: #f3f4f6;
+    border-bottom-color: #374151;
+  }
+  
+  .classCard {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+  
+  .classCardTitle {
+    color: #f3f4f6;
+  }
+  
+  .classCardSubtitle {
+    color: #d1d5db;
+  }
+  
+  .classDetailLabel {
+    color: #9ca3af;
+  }
+  
+  .classDetailValue {
+    color: #e5e7eb;
+  }
+  
+  .classCardFooter {
+    background-color: #111827;
+    border-top-color: #374151;
+  }
+  
+  .errorContainer {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+}

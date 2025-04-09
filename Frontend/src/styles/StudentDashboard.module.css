@@ -294,4 +294,33 @@
   .actionButton:hover {
     box-shadow: 0 4px 6px rgba(129, 140, 248, 0.2);
   }
+
+  /* Fix contrast for dashboard header text */
+  .dashboardHeader h1 {
+    color: var(--color-gray-100, #f3f4f6);
+  }
+  
+  .dashboardHeader p {
+    color: var(--color-gray-300, #d1d5db);
+  }
+  
+  /* Enhanced contrast for error messages */
+  .errorMessage {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+  }
+}
+
+/* Additional sidebar-aware responsive adjustments */
+@media (min-width: 1025px) {
+  .dashboardContainer {
+    padding-left: 1rem; /* Leave space for the sidebar */
+  }
+}
+
+/* Adjust for mobile sidebar toggle button */
+@media (max-width: 1024px) {
+  .dashboardContainer {
+    padding-top: 3.5rem; /* Make room for mobile toggle button */
+  }
 }
