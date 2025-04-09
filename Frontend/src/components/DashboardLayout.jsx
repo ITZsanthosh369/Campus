@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Navbar from './Navbar';
 import SidebarLayout from './SidebarLayout';
 import '../styles/main.css';
 
@@ -26,14 +25,11 @@ const DashboardLayout = ({ children, allowedRole }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <Navbar />
-      <SidebarLayout>
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-          {children}
-        </div>
-      </SidebarLayout>
-    </div>
+    <SidebarLayout>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        {children}
+      </div>
+    </SidebarLayout>
   );
 };
 

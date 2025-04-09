@@ -2,20 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchWithAuth } from '../utils/apiUtils';
-import APIResponseDebugger from '../components/APIResponseDebugger';
-import APIDebugger from '../components/APIDebugger';
-import styles from '../styles/StudentDashboard.module.css'; // Updated to use CSS modules
+import styles from '../styles/StudentDashboard.module.css';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [apiResponses, setApiResponses] = useState({
-    announcements: null,
-    assignments: null,
-    classes: null
-  });
   const [dashboardData, setDashboardData] = useState({
     recentAnnouncements: [],
     upcomingAssignments: [],
@@ -34,18 +27,6 @@ const StudentDashboard = () => {
           fetchWithAuth('/assignments'),
           fetchWithAuth('/users/my-classes'),
         ]);
-
-        // Log API responses for debugging 
-        console.log('Announcements API response:', announcementsRes);
-        console.log('Assignments API response:', assignmentsRes);
-        console.log('Classes API response:', classesRes);
-
-        // Store raw responses for the debugger component
-        setApiResponses({
-          announcements: announcementsRes.data,
-          assignments: assignmentsRes.data,
-          classes: classesRes.data
-        });
 
         // Check for errors in any response
         if (announcementsRes.error || assignmentsRes.error || classesRes.error) {
@@ -144,7 +125,7 @@ const StudentDashboard = () => {
         {/* Student Information Card */}
         <div className={styles.infoCard}>
           <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className={styles.cardIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             Student Information
@@ -162,7 +143,7 @@ const StudentDashboard = () => {
         {/* Recent Announcements Card */}
         <div className={styles.infoCard}>
           <h2>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className={styles.cardIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
             Recent Announcements
@@ -170,10 +151,10 @@ const StudentDashboard = () => {
           <div className={styles.announcementsList}>
             {dashboardData.recentAnnouncements.length > 0 ? (
               dashboardData.recentAnnouncements.map(announcement => (
-                <div key={announcement._id || announcement.id} className={styles.announcementItem}>
+                <div key={announcement._id || announcement.id} className={styles.activityItem}>
                   <h3>{announcement.title}</h3>
                   <p>{announcement.content || announcement.description}</p>
-                  <p className={styles.announcementDate}>{formatDate(announcement.createdAt || announcement.date)}</p>
+                  <p className={styles.activityDate}>{formatDate(announcement.createdAt || announcement.date)}</p>
                 </div>
               ))
             ) : (
@@ -184,9 +165,9 @@ const StudentDashboard = () => {
       </div>
 
       {/* Upcoming Assignments */}
-      <div className={styles.assignmentCard}>
+      <div className={styles.infoCard}>
         <h2>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className={styles.cardIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           Upcoming Assignments
@@ -194,7 +175,7 @@ const StudentDashboard = () => {
         <div className={styles.assignmentList}>
           {dashboardData.upcomingAssignments.length > 0 ? (
             dashboardData.upcomingAssignments.map(assignment => (
-              <div key={assignment._id} className={styles.assignmentItem}>
+              <div key={assignment._id} className={styles.activityItem}>
                 <div className={styles.assignmentInfo}>
                   <h3>{assignment.title}</h3>
                   <p>{assignment.courseName}</p>
@@ -219,35 +200,27 @@ const StudentDashboard = () => {
             className={styles.actionButton}
             onClick={() => navigate('/student/classes')}
           >
-            <span className={styles.icon}>📚</span> My Classes
+            <span className={styles.actionIcon}>📚</span> My Classes
           </button>
           <button 
             className={styles.actionButton}
             onClick={() => navigate('/student/assignments')}
           >
-            <span className={styles.icon}>📝</span> Assignments
+            <span className={styles.actionIcon}>📝</span> Assignments
           </button>
           <button 
             className={styles.actionButton}
             onClick={() => navigate('/student/announcements')}
           >
-            <span className={styles.icon}>📢</span> Announcements
+            <span className={styles.actionIcon}>📢</span> Announcements
           </button>
           <button 
             className={styles.actionButton}
             onClick={() => navigate('/student/queries')}
           >
-            <span className={styles.icon}>❓</span> Submit Query
+            <span className={styles.actionIcon}>❓</span> Submit Query
           </button>
         </div>
-      </div>
-
-      {/* API Response Debugger (Only visible in development environment) */}
-      <div className={styles.debugSection}>
-        <APIResponseDebugger data={apiResponses} title="Dashboard API Responses" />
-        
-        {/* API Debugger to check connectivity */}
-        <APIDebugger />
       </div>
     </div>
   );

@@ -53,6 +53,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .statCard:hover {
@@ -101,6 +102,8 @@
   padding: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
   height: 100%;
   transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .infoCard:hover {
@@ -121,7 +124,9 @@
   align-items: center;
 }
 
-.infoCard h2 svg {
+.cardIcon {
+  width: 1.25rem; /* Consistent, smaller icon size */
+  height: 1.25rem;
   margin-right: 0.5rem;
   color: var(--color-primary, #4f46e5);
 }
@@ -169,6 +174,31 @@
   color: var(--color-gray-400, #9ca3af);
 }
 
+.activityEmpty {
+  color: var(--color-gray-400, #9ca3af);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* Assignment layout */
+.assignmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.assignmentInfo {
+  flex: 1;
+}
+
+.assignmentMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-gray-500, #6b7280);
+}
+
 /* Loading and Error States */
 .loadingSpinner {
   display: flex;
@@ -182,10 +212,10 @@
   height: clamp(2.5rem, 2.25rem + 1.25vw, 3rem);
   width: clamp(2.5rem, 2.25rem + 1.25vw, 3rem);
   border-radius: 50%;
-  border-top: 0.5rem solid var(--color-primary, #4f46e5);
-  border-right: 0.5rem solid transparent;
-  border-bottom: 0.5rem solid var(--color-primary, #4f46e5);
-  border-left: 0.5rem solid transparent;
+  border-top: 0.25rem solid var(--color-primary, #4f46e5);
+  border-right: 0.25rem solid transparent;
+  border-bottom: 0.25rem solid var(--color-primary, #4f46e5);
+  border-left: 0.25rem solid transparent;
 }
 
 @keyframes spin {
@@ -213,10 +243,23 @@
   margin-top: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
 }
 
+.actionsSection h2 {
+  font-size: clamp(1.125rem, 1.05rem + 0.375vw, 1.25rem);
+  font-weight: var(--font-weight-semibold, 600);
+  margin-bottom: 1rem;
+  color: var(--color-text-primary, #374151);
+}
+
 .actionsGrid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);
+}
+
+@media (min-width: 640px) {
+  .actionsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .actionButton {
@@ -224,14 +267,24 @@
   color: white;
   border: none;
   border-radius: var(--border-radius-md, 0.375rem);
-  padding: clamp(0.6rem, 0.55rem + 0.25vw, 0.75rem) clamp(0.8rem, 0.7rem + 0.5vw, 1rem);
+  padding: clamp(0.75rem, 0.7rem + 0.25vw, 1rem);
   font-weight: var(--font-weight-medium, 500);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
   font-size: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);
+  flex-direction: column;
+  height: 100%;
+  min-height: 5rem;
+}
+
+.actionIcon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.25rem;
 }
 
 .actionButton:hover {
